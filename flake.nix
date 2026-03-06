@@ -12,10 +12,10 @@
     # Hyprspace – overview plugin for Hyprland
     # If hyprlandPlugins.hyprspace exists in your nixpkgs, you can remove
     # this input and use the nixpkgs version instead (simpler).
-    hyprspace = {
-      url = "github:KZDKM/Hyprspace";
-      inputs.hyprland.follows = "nixpkgs";
-    };
+    # hyprspace = {
+    #  url = "github:KZDKM/Hyprspace";
+    #  inputs.hyprland.follows = "nixpkgs";
+    #};
 
     # DankMaterialShell – desktop shell
     # ⚠ VERIFY: confirm DMS has Hyprland support (homeModules.hyprland)
@@ -43,43 +43,70 @@
       inputs.nix-gaming.follows = "nix-gaming";
     };
     # Latest nix-gaming for up-to-date DXVK/vkd3d
-    nix-gaming.url = "github:fufexan/nix-gaming";
+    nix-gaming = {
+      url = "github:fufexan/nix-gaming";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # NixVim – declarative Neovim configuration
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    #Walker / Elephant
+    elephant.url = "github:abenz1267/elephant";
+
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.elephant.follows = "elephant";
+    };
+
+    # Claude Code
+    claude-code.url = "github:sadjow/claude-code-nix";
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprspace, dms, dgop, zen-browser, nix-citizen, nix-gaming, nixvim, ... }@inputs:
-  let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
-  in
-  {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      inherit system;
-      specialArgs = { inherit inputs system; };
-      modules = [
-        ./hardware-configuration.nix
-        ./configuration.nix
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      dms,
+      dgop,
+      zen-browser,
+      nix-citizen,
+      nix-gaming,
+      nixvim,
+      walker,
+      ...
+    }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in
+    {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs system; };
+        modules = [
+          ./hardware-configuration.nix
+          ./configuration.nix
 
-        # Home-manager as a NixOS module
-        home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            backupFileExtension = "hm-backup";
-            extraSpecialArgs = { inherit inputs system; };
-            users.owen = import ./home.nix;
-          };
-        }
-      ];
+          # Home-manager as a NixOS module
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              extraSpecialArgs = { inherit inputs system; };
+              users.owen = import ./home.nix;
+            };
+          }
+        ];
+      };
     };
-  };
 }

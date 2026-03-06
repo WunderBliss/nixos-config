@@ -1,27 +1,49 @@
-{ config, pkgs, inputs, system, lib, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  system,
+  lib,
+  ...
+}:
 
 {
   imports = [
-    /etc/nixos/hardware-configuration.nix
+    ./hardware-configuration.nix
   ];
 
   # ── Nix Settings ──────────────────────────────────────────────────────
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     # nix-citizen binary cache (Star Citizen wine builds)
-    substituters = [ "https://nix-citizen.cachix.org" ];
-    trusted-public-keys = [ "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo=" ];
+    substituters = [
+      "https://nix-citizen.cachix.org"
+      "https://claude-code.cachix.org"
+    ];
+    trusted-public-keys = [
+      "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
+      "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+    ];
+
   };
 
   # ── Kernel Tuning (required for Star Citizen) ─────────────────────────
   boot.kernel.sysctl = {
-    "vm.max_map_count" = 16777216;   # SC needs a high mmap limit
-    "fs.file-max" = 524288;          # High open file descriptor limit
+    "vm.max_map_count" = 16777216; # SC needs a high mmap limit
+    "fs.file-max" = 524288; # High open file descriptor limit
   };
+
+  boot.kernelParams = [ "amd_iommu=off" ];
 
   # ── Bootloader (systemd-boot) ────────────────────────────────────────
   boot.loader = {
-    systemd-boot.enable = true;
+    systemd-boot = {
+      enable = true;
+      consoleMode = "max";
+    };
     efi.canTouchEfiVariables = true;
   };
 
@@ -35,7 +57,7 @@
   };
 
   # ── Locale & Time ────────────────────────────────────────────────────
-  time.timeZone = "America/New_York"; # Adjust to your timezone
+  time.timeZone = "Asia/Tokyo"; # Adjust to your timezone
   i18n.defaultLocale = "en_US.UTF-8";
 
   # ── Unfree Packages ──────────────────────────────────────────────────
@@ -46,7 +68,13 @@
     isNormalUser = true;
     description = "Owen";
     initialPassword = "owen";
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" "input" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "video"
+      "audio"
+      "input"
+    ];
     shell = pkgs.fish;
   };
 
@@ -105,7 +133,10 @@
     ];
     config = {
       hyprland = {
-        default = [ "hyprland" "gtk" ];
+        default = [
+          "hyprland"
+          "gtk"
+        ];
         "org.freedesktop.impl.portal.FileChooser" = "termfilechooser";
       };
     };
@@ -142,42 +173,54 @@
   };
 
   # ── System Packages ──────────────────────────────────────────────────
-  environment.systemPackages = with pkgs; [
-    git
-    neovim
-    lazygit
-    ghostty
-    obsidian
-    protonvpn-gui
-    lact
-    yazi
-    protonup-qt
-    wl-clipboard       # Wayland clipboard utils
-    nautilus            # Needed for portal-gnome file chooser fallback
-    brightnessctl       # Backlight control
-    playerctl           # MPRIS media control
-    networkmanagerapplet
-    glib                # gsettings for GTK theming
-    adw-gtk3            # GTK3 theme that DMS matugen can target
-    adwaita-icon-theme  # Fallback icons
-    fish                # Default shell
-    starship            # Prompt
-    grimblast           # Screenshot tool for Hyprland (replaces niri built-in)
-    slurp               # Region selection for screenshots
-    grim                # Base screenshot utility
-    hyprpicker          # Color picker for Hyprland
-  ] ++ [
-    # Zen Browser from flake
-    inputs.zen-browser.packages.${system}.default
-  ];
+  environment.systemPackages =
+    with pkgs;
+    [
+      git
+      neovim
+      lazygit
+      ghostty
+      obsidian
+      protonvpn-gui
+      lact
+      yazi
+      protonup-qt
+      wl-clipboard # Wayland clipboard utils
+      nautilus # Needed for portal-gnome file chooser fallback
+      brightnessctl # Backlight control
+      playerctl # MPRIS media control
+      networkmanagerapplet
+      glib # gsettings for GTK theming
+      adw-gtk3 # GTK3 theme that DMS matugen can target
+      adwaita-icon-theme # Fallback icons
+      fish # Default shell
+      starship # Prompt
+      grimblast # Screenshot tool for Hyprland (replaces niri built-in)
+      slurp # Region selection for screenshots
+      grim # Base screenshot utility
+      hyprpicker # Color picker for Hyprland
+      vesktop
+      fastfetch
+    ]
+    ++ [
+      # Zen Browser from flake
+      inputs.zen-browser.packages.${system}.default
+    ];
 
+  # 1password
+  programs._1password.enable = true;
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "owen" ];
+  };
   # ── Fonts ────────────────────────────────────────────────────────────
   fonts = {
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
-      noto-fonts-emoji
-      (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
+      noto-fonts-color-emoji
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
     ];
     fontconfig.defaultFonts = {
       monospace = [ "JetBrainsMono Nerd Font" ];
@@ -188,8 +231,8 @@
 
   # ── Environment Variables (Wayland best practices) ────────────────────
   environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";          # Electron apps → Wayland
-    MOZ_ENABLE_WAYLAND = "1";      # Firefox/Zen → Wayland
+    NIXOS_OZONE_WL = "1"; # Electron apps → Wayland
+    MOZ_ENABLE_WAYLAND = "1"; # Firefox/Zen → Wayland
     QT_QPA_PLATFORM = "wayland";
     SDL_VIDEODRIVER = "wayland";
     GDK_BACKEND = "wayland,x11";
@@ -214,7 +257,7 @@
   '';
 
   # ── Misc Services ────────────────────────────────────────────────────
-  services.gvfs.enable = true;      # Trash, network mounts in file manager
+  services.gvfs.enable = true; # Trash, network mounts in file manager
   services.accounts-daemon.enable = true; # For DMS user avatar
   services.power-profiles-daemon.enable = true; # Power management
 
