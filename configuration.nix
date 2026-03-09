@@ -74,6 +74,8 @@
       "video"
       "audio"
       "input"
+      "libvirtd"
+      "kvm"
     ];
     shell = pkgs.fish;
   };
@@ -201,6 +203,7 @@
       hyprpicker # Color picker for Hyprland
       vesktop
       fastfetch
+      virt-viewer # SPICE/VNC display client for VMs
     ]
     ++ [
       # Zen Browser from flake
@@ -255,6 +258,19 @@
       fi
     ''}
   '';
+
+  # ── Virtualisation (QEMU/KVM + virt-manager) ─────────────────────────
+  # Note: GPU passthrough is not possible because amd_iommu=off is set.
+  # A standard Windows VM with VirtIO drivers works fine without it.
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = false;
+      swtpm.enable = true;   # TPM emulation (required for Windows 11)
+    };
+  };
+  programs.virt-manager.enable = true;
 
   # ── Misc Services ────────────────────────────────────────────────────
   services.gvfs.enable = true; # Trash, network mounts in file manager

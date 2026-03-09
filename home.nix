@@ -711,7 +711,7 @@
           sdrbrightness = 1.5;
           sdrsaturation = 1.5;
           vrr = 1;
-          supports_hdr = 10;
+          supports_hdr = true;
         }
       ];
 
