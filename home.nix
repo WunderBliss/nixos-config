@@ -334,9 +334,9 @@
       lockBeforeSuspend = false;
       loginctlLockIntegration = true;
       fadeToLockEnabled = true;
-      fadeToLockGracePeriod = 5;
+      fadeToLockGracePeriod = 2;
       fadeToDpmsEnabled = true;
-      fadeToDpmsGracePeriod = 5;
+      fadeToDpmsGracePeriod = 2;
       launchPrefix = "";
       brightnessDevicePins = { };
       wifiNetworkPins = { };

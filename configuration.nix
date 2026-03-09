@@ -13,21 +13,28 @@
   ];
 
   # ── Nix Settings ──────────────────────────────────────────────────────
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    # nix-citizen binary cache (Star Citizen wine builds)
-    substituters = [
-      "https://nix-citizen.cachix.org"
-      "https://claude-code.cachix.org"
-    ];
-    trusted-public-keys = [
-      "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
-      "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
-    ];
-
+  nix = {
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      # nix-citizen binary cache (Star Citizen wine builds)
+      substituters = [
+        "https://nix-citizen.cachix.org"
+        "https://claude-code.cachix.org"
+      ];
+      trusted-public-keys = [
+        "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
+        "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+      ];
+      auto-optimise-store = true;
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
   };
 
   # ── Kernel Tuning (required for Star Citizen) ─────────────────────────
@@ -43,6 +50,7 @@
     systemd-boot = {
       enable = true;
       consoleMode = "max";
+      configurationLimit = 10;
     };
     efi.canTouchEfiVariables = true;
   };
@@ -267,7 +275,7 @@
     qemu = {
       package = pkgs.qemu_kvm;
       runAsRoot = false;
-      swtpm.enable = true;   # TPM emulation (required for Windows 11)
+      swtpm.enable = true; # TPM emulation (required for Windows 11)
     };
   };
   programs.virt-manager.enable = true;
