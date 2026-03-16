@@ -64,6 +64,12 @@
 
     # Claude Code
     claude-code.url = "github:sadjow/claude-code-nix";
+
+    # Claude Desktop
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

@@ -36,6 +36,11 @@
       inputs.nix-citizen.packages.${system}.rsi-launcher # Recommended package
       #inputs.nix-citizen.packages.${system}.lug-helper     # LUG Helper tool
       inputs.claude-code.packages.${system}.default
+      # Godot wrapper: clears stale D-Bus screensaver inhibitor after exit
+      (pkgs.writeShellScriptBin "godot-launcher" ''
+        godot4 "$@"
+        systemctl --user restart hypridle
+      '')
     ];
   };
 
@@ -965,6 +970,12 @@
       # Suppress fish greeting
       set -g fish_greeting
       fastfetch
+
+      # Godot wrapper: restart hypridle after exit to clear stale D-Bus inhibitors
+      function godot
+        godot4 $argv
+        systemctl --user restart hypridle
+      end
     '';
   };
 
@@ -1081,6 +1092,17 @@
     defaultApplications = {
       "inode/directory" = [ "yazi.desktop" ];
     };
+  };
+
+  xdg.desktopEntries."org.godotengine.Godot4.6" = {
+    name = "Godot Engine 4.6";
+    comment = "Multi-platform 2D and 3D game engine with a feature-rich editor";
+    exec = "godot-launcher %f";
+    icon = "godot";
+    terminal = false;
+    type = "Application";
+    categories = [ "Development" "IDE" ];
+    mimeType = [ "application/x-godot-project" ];
   };
 
   xdg.desktopEntries.yazi = {

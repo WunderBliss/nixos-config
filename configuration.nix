@@ -12,6 +12,16 @@
     ./hardware-configuration.nix
   ];
 
+  # ── Extra Filesystems ─────────────────────────────────────────────────
+  fileSystems."/data" = {
+    device = "/dev/disk/by-uuid/72e405b5-a7e0-4831-a612-44d729531d56";
+    fsType = "btrfs";
+    options = [
+      "defaults"
+      "nofail"
+    ];
+  };
+
   # ── Nix Settings ──────────────────────────────────────────────────────
   nix = {
     settings = {
@@ -166,12 +176,28 @@
   security.polkit.enable = true;
 
   # ── LACT (AMD GPU control) ───────────────────────────────────────────
-  systemd.services.lactd = {
-    description = "LACT GPU Daemon";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.lact}/bin/lact daemon";
-      Restart = "on-failure";
+  systemd.services = {
+    lactd = {
+      description = "LACT GPU Daemon";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.lact}/bin/lact daemon";
+        Restart = "on-failure";
+      };
+    };
+    disable-usb-wakeup = {
+      description = "Disable USB controller wakeup sources";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = pkgs.writeShellScript "disable-usb-wakeup" ''
+          for device in XHC0 XHC1 XHC2 XH00 UXHC; do
+            if grep -q "^$device.*enabled" /proc/acpi/wakeup; then
+              echo "$device" > /proc/acpi/wakeup
+            fi
+          done
+        '';
+      };
     };
   };
 
@@ -212,10 +238,13 @@
       vesktop
       fastfetch
       virt-viewer # SPICE/VNC display client for VMs
+      godot_4
     ]
     ++ [
       # Zen Browser from flake
       inputs.zen-browser.packages.${system}.default
+      # Claude Desktop from flake
+      inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
     ];
 
   # 1password
@@ -245,7 +274,7 @@
     NIXOS_OZONE_WL = "1"; # Electron apps → Wayland
     MOZ_ENABLE_WAYLAND = "1"; # Firefox/Zen → Wayland
     QT_QPA_PLATFORM = "wayland";
-    SDL_VIDEODRIVER = "wayland";
+    # SDL_VIDEODRIVER = "wayland";
     GDK_BACKEND = "wayland,x11";
     XDG_SESSION_TYPE = "wayland";
     XDG_CURRENT_DESKTOP = "Hyprland";

@@ -77,15 +77,42 @@
         enable = true;
         extensions.fzf-native.enable = true;
         keymaps = {
-          "<leader>ff" = { action = "find_files"; options.desc = "Find Files"; };
-          "<leader>fg" = { action = "live_grep"; options.desc = "Grep"; };
-          "<leader>fb" = { action = "buffers"; options.desc = "Buffers"; };
-          "<leader>fh" = { action = "help_tags"; options.desc = "Help Tags"; };
-          "<leader>fr" = { action = "oldfiles"; options.desc = "Recent Files"; };
-          "<leader>fc" = { action = "commands"; options.desc = "Commands"; };
-          "<leader>fd" = { action = "diagnostics"; options.desc = "Diagnostics"; };
-          "<leader>fs" = { action = "lsp_document_symbols"; options.desc = "Symbols"; };
-          "<leader>/" = { action = "live_grep"; options.desc = "Grep (root)"; };
+          "<leader>ff" = {
+            action = "find_files";
+            options.desc = "Find Files";
+          };
+          "<leader>fg" = {
+            action = "live_grep";
+            options.desc = "Grep";
+          };
+          "<leader>fb" = {
+            action = "buffers";
+            options.desc = "Buffers";
+          };
+          "<leader>fh" = {
+            action = "help_tags";
+            options.desc = "Help Tags";
+          };
+          "<leader>fr" = {
+            action = "oldfiles";
+            options.desc = "Recent Files";
+          };
+          "<leader>fc" = {
+            action = "commands";
+            options.desc = "Commands";
+          };
+          "<leader>fd" = {
+            action = "diagnostics";
+            options.desc = "Diagnostics";
+          };
+          "<leader>fs" = {
+            action = "lsp_document_symbols";
+            options.desc = "Symbols";
+          };
+          "<leader>/" = {
+            action = "live_grep";
+            options.desc = "Grep (root)";
+          };
         };
       };
 
@@ -96,9 +123,26 @@
           highlight.enable = true;
           indent.enable = true;
           ensure_installed = [
-            "bash" "c" "css" "html" "javascript" "json" "lua"
-            "markdown" "markdown_inline" "nix" "python" "rust"
-            "toml" "typescript" "vim" "vimdoc" "yaml" "tsx" "regex"
+            "bash"
+            "c"
+            "css"
+            "html"
+            "javascript"
+            "json"
+            "lua"
+            "markdown"
+            "markdown_inline"
+            "nix"
+            "python"
+            "rust"
+            "toml"
+            "typescript"
+            "vim"
+            "vimdoc"
+            "yaml"
+            "tsx"
+            "regex"
+            "gdscript"
           ];
         };
       };
@@ -123,20 +167,24 @@
           };
         };
         servers = {
-          nil_ls.enable = true;       # Nix
-          lua_ls.enable = true;       # Lua
-          ts_ls.enable = true;        # TypeScript/JavaScript
+          nil_ls.enable = true; # Nix
+          lua_ls.enable = true; # Lua
+          ts_ls.enable = true; # TypeScript/JavaScript
           rust_analyzer = {
             enable = true;
             installCargo = true;
             installRustc = true;
           };
-          pyright.enable = true;      # Python
-          bashls.enable = true;       # Bash
-          cssls.enable = true;        # CSS
-          html.enable = true;         # HTML
-          jsonls.enable = true;       # JSON
-          yamlls.enable = true;       # YAML
+          pyright.enable = true; # Python
+          bashls.enable = true; # Bash
+          cssls.enable = true; # CSS
+          html.enable = true; # HTML
+          jsonls.enable = true; # JSON
+          yamlls.enable = true; # YAML
+          gdscript = {
+            enable = true;
+            package = null; # LSP is built into godot_4, installed via configuration.nix
+          };
         };
       };
 
@@ -224,12 +272,30 @@
       which-key = {
         enable = true;
         settings.spec = [
-          { __unkeyed-1 = "<leader>f"; group = "Find"; }
-          { __unkeyed-1 = "<leader>c"; group = "Code"; }
-          { __unkeyed-1 = "<leader>g"; group = "Git"; }
-          { __unkeyed-1 = "<leader>b"; group = "Buffer"; }
-          { __unkeyed-1 = "<leader>x"; group = "Trouble"; }
-          { __unkeyed-1 = "<leader>u"; group = "UI"; }
+          {
+            __unkeyed-1 = "<leader>f";
+            group = "Find";
+          }
+          {
+            __unkeyed-1 = "<leader>c";
+            group = "Code";
+          }
+          {
+            __unkeyed-1 = "<leader>g";
+            group = "Git";
+          }
+          {
+            __unkeyed-1 = "<leader>b";
+            group = "Buffer";
+          }
+          {
+            __unkeyed-1 = "<leader>x";
+            group = "Trouble";
+          }
+          {
+            __unkeyed-1 = "<leader>u";
+            group = "UI";
+          }
         ];
       };
 
@@ -247,11 +313,11 @@
       mini = {
         enable = true;
         modules = {
-          pairs = {};    # Auto-pairs
-          surround = {}; # Surround motions
-          ai = {};       # Textobjects (around/inside)
-          comment = {};  # gc to comment
-          icons = {};    # File icons
+          pairs = { }; # Auto-pairs
+          surround = { }; # Surround motions
+          ai = { }; # Textobjects (around/inside)
+          comment = { }; # gc to comment
+          icons = { }; # File icons
         };
       };
 
@@ -276,6 +342,7 @@
             markdown = [ "prettierd" ];
             rust = [ "rustfmt" ];
             "_" = [ "trim_whitespace" ];
+            gdscript = [ "gdformat" ];
           };
         };
       };
@@ -336,49 +403,164 @@
     # ── Extra Keymaps ─────────────────────────────────────────────────
     keymaps = [
       # Buffer navigation (like LazyVim)
-      { mode = "n"; key = "<S-h>"; action = "<cmd>bprevious<CR>"; options.desc = "Prev Buffer"; }
-      { mode = "n"; key = "<S-l>"; action = "<cmd>bnext<CR>"; options.desc = "Next Buffer"; }
-      { mode = "n"; key = "<leader>bd"; action = "<cmd>bdelete<CR>"; options.desc = "Delete Buffer"; }
+      {
+        mode = "n";
+        key = "<S-h>";
+        action = "<cmd>bprevious<CR>";
+        options.desc = "Prev Buffer";
+      }
+      {
+        mode = "n";
+        key = "<S-l>";
+        action = "<cmd>bnext<CR>";
+        options.desc = "Next Buffer";
+      }
+      {
+        mode = "n";
+        key = "<leader>bd";
+        action = "<cmd>bdelete<CR>";
+        options.desc = "Delete Buffer";
+      }
 
       # Neo-tree
-      { mode = "n"; key = "<leader>e"; action = "<cmd>Neotree toggle<CR>"; options.desc = "Explorer"; }
+      {
+        mode = "n";
+        key = "<leader>e";
+        action = "<cmd>Neotree toggle<CR>";
+        options.desc = "Explorer";
+      }
 
       # Lazygit
-      { mode = "n"; key = "<leader>gg"; action = "<cmd>LazyGit<CR>"; options.desc = "LazyGit"; }
+      {
+        mode = "n";
+        key = "<leader>gg";
+        action = "<cmd>LazyGit<CR>";
+        options.desc = "LazyGit";
+      }
 
       # Trouble
-      { mode = "n"; key = "<leader>xx"; action = "<cmd>Trouble diagnostics toggle<CR>"; options.desc = "Diagnostics"; }
-      { mode = "n"; key = "<leader>xX"; action = "<cmd>Trouble diagnostics toggle filter.buf=0<CR>"; options.desc = "Buffer Diagnostics"; }
-      { mode = "n"; key = "<leader>xL"; action = "<cmd>Trouble loclist toggle<CR>"; options.desc = "Location List"; }
-      { mode = "n"; key = "<leader>xQ"; action = "<cmd>Trouble qflist toggle<CR>"; options.desc = "Quickfix List"; }
+      {
+        mode = "n";
+        key = "<leader>xx";
+        action = "<cmd>Trouble diagnostics toggle<CR>";
+        options.desc = "Diagnostics";
+      }
+      {
+        mode = "n";
+        key = "<leader>xX";
+        action = "<cmd>Trouble diagnostics toggle filter.buf=0<CR>";
+        options.desc = "Buffer Diagnostics";
+      }
+      {
+        mode = "n";
+        key = "<leader>xL";
+        action = "<cmd>Trouble loclist toggle<CR>";
+        options.desc = "Location List";
+      }
+      {
+        mode = "n";
+        key = "<leader>xQ";
+        action = "<cmd>Trouble qflist toggle<CR>";
+        options.desc = "Quickfix List";
+      }
 
       # Window navigation
-      { mode = "n"; key = "<C-h>"; action = "<C-w>h"; options.desc = "Go to left window"; }
-      { mode = "n"; key = "<C-j>"; action = "<C-w>j"; options.desc = "Go to lower window"; }
-      { mode = "n"; key = "<C-k>"; action = "<C-w>k"; options.desc = "Go to upper window"; }
-      { mode = "n"; key = "<C-l>"; action = "<C-w>l"; options.desc = "Go to right window"; }
+      {
+        mode = "n";
+        key = "<C-h>";
+        action = "<C-w>h";
+        options.desc = "Go to left window";
+      }
+      {
+        mode = "n";
+        key = "<C-j>";
+        action = "<C-w>j";
+        options.desc = "Go to lower window";
+      }
+      {
+        mode = "n";
+        key = "<C-k>";
+        action = "<C-w>k";
+        options.desc = "Go to upper window";
+      }
+      {
+        mode = "n";
+        key = "<C-l>";
+        action = "<C-w>l";
+        options.desc = "Go to right window";
+      }
 
       # Better escape
-      { mode = "i"; key = "jk"; action = "<ESC>"; options.desc = "Exit insert mode"; }
+      {
+        mode = "i";
+        key = "jk";
+        action = "<ESC>";
+        options.desc = "Exit insert mode";
+      }
 
       # Move lines (like LazyVim)
-      { mode = "n"; key = "<A-j>"; action = "<cmd>m .+1<CR>=="; options.desc = "Move Down"; }
-      { mode = "n"; key = "<A-k>"; action = "<cmd>m .-2<CR>=="; options.desc = "Move Up"; }
-      { mode = "v"; key = "<A-j>"; action = ":m '>+1<CR>gv=gv"; options.desc = "Move Down"; }
-      { mode = "v"; key = "<A-k>"; action = ":m '<-2<CR>gv=gv"; options.desc = "Move Up"; }
+      {
+        mode = "n";
+        key = "<A-j>";
+        action = "<cmd>m .+1<CR>==";
+        options.desc = "Move Down";
+      }
+      {
+        mode = "n";
+        key = "<A-k>";
+        action = "<cmd>m .-2<CR>==";
+        options.desc = "Move Up";
+      }
+      {
+        mode = "v";
+        key = "<A-j>";
+        action = ":m '>+1<CR>gv=gv";
+        options.desc = "Move Down";
+      }
+      {
+        mode = "v";
+        key = "<A-k>";
+        action = ":m '<-2<CR>gv=gv";
+        options.desc = "Move Up";
+      }
 
       # Clear search highlight
-      { mode = "n"; key = "<Esc>"; action = "<cmd>noh<CR>"; options.desc = "Clear highlights"; }
+      {
+        mode = "n";
+        key = "<Esc>";
+        action = "<cmd>noh<CR>";
+        options.desc = "Clear highlights";
+      }
 
       # Save
-      { mode = "n"; key = "<C-s>"; action = "<cmd>w<CR>"; options.desc = "Save"; }
+      {
+        mode = "n";
+        key = "<C-s>";
+        action = "<cmd>w<CR>";
+        options.desc = "Save";
+      }
 
       # Quit
-      { mode = "n"; key = "<leader>qq"; action = "<cmd>qa<CR>"; options.desc = "Quit All"; }
+      {
+        mode = "n";
+        key = "<leader>qq";
+        action = "<cmd>qa<CR>";
+        options.desc = "Quit All";
+      }
 
       # UI toggles
-      { mode = "n"; key = "<leader>un"; action = "<cmd>set relativenumber!<CR>"; options.desc = "Toggle Relative Numbers"; }
-      { mode = "n"; key = "<leader>uw"; action = "<cmd>set wrap!<CR>"; options.desc = "Toggle Wrap"; }
+      {
+        mode = "n";
+        key = "<leader>un";
+        action = "<cmd>set relativenumber!<CR>";
+        options.desc = "Toggle Relative Numbers";
+      }
+      {
+        mode = "n";
+        key = "<leader>uw";
+        action = "<cmd>set wrap!<CR>";
+        options.desc = "Toggle Wrap";
+      }
     ];
 
     # ── Extra Packages (formatters, linters used by plugins) ──────────
@@ -389,6 +571,7 @@
       nixfmt-rfc-style
       prettierd
       nodePackages.typescript-language-server
+      gdtoolkit_4
     ];
   };
 }
