@@ -208,6 +208,12 @@
     dedicatedServer.openFirewall = true;
   };
 
+  # ── LocalSend ────────────────────────────────────────────────────────────
+  programs.localsend = {
+    enable = true;
+    openFirewall = true;
+  };
+
   # ── System Packages ──────────────────────────────────────────────────
   environment.systemPackages =
     with pkgs;

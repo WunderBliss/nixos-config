@@ -713,8 +713,8 @@
           scale = 1;
           bitdepth = 10;
           cm = "hdr";
-          sdrbrightness = 1.5;
-          sdrsaturation = 1.5;
+          sdrbrightness = 1.4;
+          sdrsaturation = 1.6;
           vrr = 1;
           supports_hdr = true;
         }
@@ -735,6 +735,8 @@
         fullscreen_on_one_column = false;
         follow_min_visible = 0.4;
         explicit_column_widths = "0.25, 0.333, 0.5, 0.666, 1.0";
+        warp_focus = false;
+        warp_swapcol = false;
       };
 
       # ── Input ───────────────────────────────────────────────────────
@@ -818,6 +820,9 @@
 
         # Yazi file picker (spawned by xdg-desktop-portal-termfilechooser)
         "match:class = ^(yazi-picker)$, float on, move 300 200"
+
+        # Godot debug windows (title is "[Project Name] (DEBUG)")
+        "match:title = ^.*(DEBUG)$, float on"
       ];
 
       # ── Startup ─────────────────────────────────────────────────────
@@ -861,6 +866,7 @@
 
         # ── Sizing ─────────────────────────────────────────────────
         "$mod, R, layoutmsg, colresize +conf"
+        "$mod SHIFT, R, layoutmsg, colresize -conf"
         "$mod, F, layoutmsg, colresize 1.0"
         "$mod, period, layoutmsg, promote"
         "$mod SHIFT, F, fullscreen, 1" # Maximize (keep bar)
@@ -1101,7 +1107,10 @@
     icon = "godot";
     terminal = false;
     type = "Application";
-    categories = [ "Development" "IDE" ];
+    categories = [
+      "Development"
+      "IDE"
+    ];
     mimeType = [ "application/x-godot-project" ];
   };
 

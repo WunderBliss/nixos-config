@@ -50,6 +50,7 @@
     # This means Neovim's palette automatically matches your wallpaper.
     extraPlugins = with pkgs.vimPlugins; [
       base16-nvim
+      render-markdown-nvim
     ];
     extraConfigLua = ''
       -- Use terminal palette (set by DMS dank16/matugen) as the base16 scheme
@@ -59,6 +60,7 @@
         -- base16-colorscheme will pick up the 16 terminal colors
         vim.cmd.colorscheme("base16-default-dark")
       end
+      require("render-markdown").setup({})
     '';
 
     # ── Plugins ───────────────────────────────────────────────────────
@@ -145,6 +147,10 @@
             "gdscript"
           ];
         };
+        grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+          markdown
+          markdown_inline
+        ];
       };
 
       # ── LSP ───────────────────────────────────────────────────────
