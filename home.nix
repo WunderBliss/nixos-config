@@ -735,8 +735,8 @@
         fullscreen_on_one_column = false;
         follow_min_visible = 0.4;
         explicit_column_widths = "0.25, 0.333, 0.5, 0.666, 1.0";
-        warp_focus = false;
-        warp_swapcol = false;
+        wrap_focus = false;
+        wrap_swapcol = false;
       };
 
       # ── Input ───────────────────────────────────────────────────────
