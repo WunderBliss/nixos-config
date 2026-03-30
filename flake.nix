@@ -70,6 +70,11 @@
       url = "github:k3d3/claude-desktop-linux-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Claude Cowork
+    claude-cowork-service = {
+      url = "github:patrickjaja/claude-cowork-service";
+    };
   };
 
   outputs =

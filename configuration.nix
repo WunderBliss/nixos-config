@@ -10,6 +10,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    inputs.claude-cowork-service.nixosModules.default
   ];
 
   # ── Extra Filesystems ─────────────────────────────────────────────────
@@ -94,6 +95,7 @@
       "input"
       "libvirtd"
       "kvm"
+      "adbusers"
     ];
     shell = pkgs.fish;
   };
@@ -215,6 +217,54 @@
   };
 
   # ── System Packages ──────────────────────────────────────────────────
+  # ── Android / Flutter Development ────────────────────────────────────
+  # nix-ld provides a dynamic linker stub so pre-built FHS binaries
+  # (Android emulator, Flutter tools) can run on NixOS without wrapping.
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      # X11 / XWayland (emulator UI runs via XWayland on Wayland compositors)
+      xorg.libX11
+      xorg.libXext
+      xorg.libXrender
+      xorg.libXrandr
+      xorg.libXi
+      xorg.libXcursor
+      xorg.libXfixes
+      xorg.libXcomposite
+      xorg.libXdamage
+      xorg.libXtst
+      libxcb
+      # OpenGL / Vulkan
+      libGL
+      mesa
+      vulkan-loader
+      # C++ / system runtime
+      stdenv.cc.cc.lib
+      zlib
+      zstd
+      # GLib / DBus
+      glib
+      dbus
+      # Fonts / images
+      freetype
+      fontconfig
+      libpng
+      # Audio
+      libpulseaudio
+      alsa-lib
+      # NSS / crypto (emulator network stack)
+      nss
+      nspr
+      # Misc runtime
+      libdrm
+      libuuid
+      curl
+      expat
+      libxml2
+    ];
+  };
+
   environment.systemPackages =
     with pkgs;
     [
@@ -245,6 +295,11 @@
       fastfetch
       virt-viewer # SPICE/VNC display client for VMs
       godot_4
+      # Flutter / Android development
+      flutter
+      android-studio
+      jdk17
+      android-tools
     ]
     ++ [
       # Zen Browser from flake
@@ -252,6 +307,9 @@
       # Claude Desktop from flake
       inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
     ];
+
+  # Claude Cowork service from flake
+  services.claude-cowork.enable = true;
 
   # 1password
   programs._1password.enable = true;
@@ -284,6 +342,10 @@
     GDK_BACKEND = "wayland,x11";
     XDG_SESSION_TYPE = "wayland";
     XDG_CURRENT_DESKTOP = "Hyprland";
+    # Android SDK (populated by Android Studio on first run)
+    ANDROID_HOME = "/home/owen/Android/Sdk";
+    ANDROID_SDK_ROOT = "/home/owen/Android/Sdk";
+    JAVA_HOME = "${pkgs.jdk17}/lib/openjdk";
   };
 
   # ── xdg-desktop-portal-termfilechooser config ────────────────────────

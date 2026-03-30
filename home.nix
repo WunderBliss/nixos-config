@@ -30,6 +30,18 @@
     homeDirectory = "/home/owen";
     stateVersion = "24.11";
 
+    # ── Android SDK PATH additions (SDK itself installed by Android Studio) ─
+    sessionPath = [
+      "/home/owen/Android/Sdk/platform-tools"
+      "/home/owen/Android/Sdk/emulator"
+      "/home/owen/Android/Sdk/cmdline-tools/latest/bin"
+    ];
+
+    # sqlite3 shared lib needed by Drift/Flutter unit tests on Linux
+    sessionVariables = {
+      LD_LIBRARY_PATH = "${pkgs.sqlite.out}/lib";
+    };
+
     # ── Extra Packages ────────────────────────────────────────────────
     packages = [
       # Star Citizen via nix-citizen (LUG recommended for NixOS)
@@ -40,6 +52,34 @@
       (pkgs.writeShellScriptBin "godot-launcher" ''
         godot4 "$@"
         systemctl --user restart hypridle
+      '')
+
+      # Android emulator wrapper: merges all needed libs into one dir so
+      # LD_LIBRARY_PATH stays short. No bwrap/namespaces required.
+      # Usage: android-emulator -avd <avd-name>
+      (let
+        emuLibs = pkgs.symlinkJoin {
+          name = "android-emulator-libs";
+          paths = with pkgs; [
+            xorg.libX11 xorg.libXext xorg.libXrender xorg.libXrandr
+            xorg.libXi xorg.libXcursor xorg.libXfixes xorg.libXcomposite
+            xorg.libXdamage xorg.libXtst xorg.libxkbfile xorg.libSM xorg.libICE
+            libxcb libxkbcommon xcb-util-cursor
+            xorg.xcbutilimage xorg.xcbutilkeysyms xorg.xcbutilrenderutil xorg.xcbutilwm
+            libGL mesa vulkan-loader
+            stdenv.cc.cc.lib zlib zstd
+            glib dbus
+            freetype fontconfig libpng pixman bzip2
+            nss nspr
+            libdrm libuuid curl expat libxml2
+            libbsd libepoxy libslirp libcap_ng libseccomp numactl
+            alsa-lib libpulseaudio
+          ];
+        };
+      in pkgs.writeShellScriptBin "android-emulator" ''
+        export LD_LIBRARY_PATH="${emuLibs}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        export QT_QPA_PLATFORM=xcb
+        exec "$HOME/Android/Sdk/emulator/emulator.bin" "$@"
       '')
     ];
   };
@@ -823,6 +863,9 @@
 
         # Godot debug windows (title is "[Project Name] (DEBUG)")
         "match:title = ^.*(DEBUG)$, float on"
+
+        # Android emulator (XWayland, class = Emulator)
+        "match:class = ^(Emulator)$, float on"
       ];
 
       # ── Startup ─────────────────────────────────────────────────────
