@@ -66,9 +66,14 @@
     claude-code.url = "github:sadjow/claude-code-nix";
 
     # Claude Desktop
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+    #claude-desktop = {
+    #url = "github:k3d3/claude-desktop-linux-flake";
+    #inputs.nixpkgs.follows = "nixpkgs";
+    #};
+
+    # Claude desktop bin
+    claude-desktop-bin = {
+      url = "github:patrickjaja/claude-desktop-bin";
     };
 
     # Claude Cowork
@@ -89,6 +94,7 @@
       nix-gaming,
       nixvim,
       walker,
+      claude-desktop-bin,
       ...
     }@inputs:
     let
@@ -113,7 +119,10 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "hm-backup";
-              extraSpecialArgs = { inherit inputs system; };
+              extraSpecialArgs = {
+                inherit inputs system;
+                inherit claude-desktop-bin;
+              };
               users.owen = import ./home.nix;
             };
           }

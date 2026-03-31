@@ -4,6 +4,7 @@
   inputs,
   system,
   lib,
+  claude-desktop-bin,
   ...
 }:
 
@@ -48,6 +49,7 @@
       inputs.nix-citizen.packages.${system}.rsi-launcher # Recommended package
       #inputs.nix-citizen.packages.${system}.lug-helper     # LUG Helper tool
       inputs.claude-code.packages.${system}.default
+      claude-desktop-bin.packages.${system}.default
       # Godot wrapper: clears stale D-Bus screensaver inhibitor after exit
       (pkgs.writeShellScriptBin "godot-launcher" ''
         godot4 "$@"
@@ -57,30 +59,68 @@
       # Android emulator wrapper: merges all needed libs into one dir so
       # LD_LIBRARY_PATH stays short. No bwrap/namespaces required.
       # Usage: android-emulator -avd <avd-name>
-      (let
-        emuLibs = pkgs.symlinkJoin {
-          name = "android-emulator-libs";
-          paths = with pkgs; [
-            xorg.libX11 xorg.libXext xorg.libXrender xorg.libXrandr
-            xorg.libXi xorg.libXcursor xorg.libXfixes xorg.libXcomposite
-            xorg.libXdamage xorg.libXtst xorg.libxkbfile xorg.libSM xorg.libICE
-            libxcb libxkbcommon xcb-util-cursor
-            xorg.xcbutilimage xorg.xcbutilkeysyms xorg.xcbutilrenderutil xorg.xcbutilwm
-            libGL mesa vulkan-loader
-            stdenv.cc.cc.lib zlib zstd
-            glib dbus
-            freetype fontconfig libpng pixman bzip2
-            nss nspr
-            libdrm libuuid curl expat libxml2
-            libbsd libepoxy libslirp libcap_ng libseccomp numactl
-            alsa-lib libpulseaudio
-          ];
-        };
-      in pkgs.writeShellScriptBin "android-emulator" ''
-        export LD_LIBRARY_PATH="${emuLibs}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-        export QT_QPA_PLATFORM=xcb
-        exec "$HOME/Android/Sdk/emulator/emulator.bin" "$@"
-      '')
+      (
+        let
+          emuLibs = pkgs.symlinkJoin {
+            name = "android-emulator-libs";
+            paths = with pkgs; [
+              xorg.libX11
+              xorg.libXext
+              xorg.libXrender
+              xorg.libXrandr
+              xorg.libXi
+              xorg.libXcursor
+              xorg.libXfixes
+              xorg.libXcomposite
+              xorg.libXdamage
+              xorg.libXtst
+              xorg.libxkbfile
+              xorg.libSM
+              xorg.libICE
+              libxcb
+              libxkbcommon
+              xcb-util-cursor
+              xorg.xcbutilimage
+              xorg.xcbutilkeysyms
+              xorg.xcbutilrenderutil
+              xorg.xcbutilwm
+              libGL
+              mesa
+              vulkan-loader
+              stdenv.cc.cc.lib
+              zlib
+              zstd
+              glib
+              dbus
+              freetype
+              fontconfig
+              libpng
+              pixman
+              bzip2
+              nss
+              nspr
+              libdrm
+              libuuid
+              curl
+              expat
+              libxml2
+              libbsd
+              libepoxy
+              libslirp
+              libcap_ng
+              libseccomp
+              numactl
+              alsa-lib
+              libpulseaudio
+            ];
+          };
+        in
+        pkgs.writeShellScriptBin "android-emulator" ''
+          export LD_LIBRARY_PATH="${emuLibs}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export QT_QPA_PLATFORM=xcb
+          exec "$HOME/Android/Sdk/emulator/emulator.bin" "$@"
+        ''
+      )
     ];
   };
 

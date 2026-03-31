@@ -210,6 +210,11 @@
     dedicatedServer.openFirewall = true;
   };
 
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
+
   # ── LocalSend ────────────────────────────────────────────────────────────
   programs.localsend = {
     enable = true;
@@ -305,7 +310,7 @@
       # Zen Browser from flake
       inputs.zen-browser.packages.${system}.default
       # Claude Desktop from flake
-      inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
+      #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
     ];
 
   # Claude Cowork service from flake
