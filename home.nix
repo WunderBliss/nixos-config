@@ -44,14 +44,14 @@
     };
 
     # ── Extra Packages ────────────────────────────────────────────────
-    packages = [
+    packages = with pkgs; [
       # Star Citizen via nix-citizen (LUG recommended for NixOS)
       inputs.nix-citizen.packages.${system}.rsi-launcher # Recommended package
       #inputs.nix-citizen.packages.${system}.lug-helper     # LUG Helper tool
       inputs.claude-code.packages.${system}.default
       claude-desktop-bin.packages.${system}.default
       # Godot wrapper: clears stale D-Bus screensaver inhibitor after exit
-      (pkgs.writeShellScriptBin "godot-launcher" ''
+      (writeShellScriptBin "godot-launcher" ''
         godot4 "$@"
         systemctl --user restart hypridle
       '')
@@ -61,7 +61,7 @@
       # Usage: android-emulator -avd <avd-name>
       (
         let
-          emuLibs = pkgs.symlinkJoin {
+          emuLibs = symlinkJoin {
             name = "android-emulator-libs";
             paths = with pkgs; [
               xorg.libX11
@@ -115,12 +115,17 @@
             ];
           };
         in
-        pkgs.writeShellScriptBin "android-emulator" ''
+        writeShellScriptBin "android-emulator" ''
           export LD_LIBRARY_PATH="${emuLibs}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
           export QT_QPA_PLATFORM=xcb
           exec "$HOME/Android/Sdk/emulator/emulator.bin" "$@"
         ''
       )
+      nodejs_22
+      nodePackages.pnpm
+      supabase-cli
+      stripe-cli
+      gh
     ];
   };
 
@@ -552,7 +557,7 @@
       niriOutputSettings = { };
       hyprlandOutputSettings = {
         "DP-1" = {
-          bitdepth = 10;
+          # bitdepth = 10;
         };
       };
       displayProfiles = { };
@@ -724,6 +729,17 @@
     };
   };
 
+  services.ssh-agent.enable = true;
+  programs.ssh = {
+    enable = true;
+    addKeysToAgent = "yes";
+    matchBlocks = {
+      "github.com" = {
+        identityFile = "~/.ssh/id_ed25519";
+      };
+    };
+  };
+
   # -- Hyprlock --
   programs.hyprlock = {
     enable = true;
@@ -791,12 +807,12 @@
           mode = "5120x1440@144";
           position = "0x0";
           scale = 1;
-          bitdepth = 10;
-          cm = "hdr";
-          sdrbrightness = 1.4;
-          sdrsaturation = 1.6;
+          #bitdepth = 10;
+          #cm = "hdr";
+          #sdrbrightness = 1.4;
+          #sdrsaturation = 1.6;
           vrr = 1;
-          supports_hdr = true;
+          #supports_hdr = true;
         }
       ];
 

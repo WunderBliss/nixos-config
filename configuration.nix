@@ -305,6 +305,7 @@
       android-studio
       jdk17
       android-tools
+      modrinth-app
     ]
     ++ [
       # Zen Browser from flake
