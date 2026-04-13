@@ -994,9 +994,9 @@
         "$mod CTRL, 9, movetoworkspace, 9"
 
         # ── Screenshots (grimblast replaces niri built-in) ─────────
-        "$mod, S, exec, grimblast --notify copysave area ~/Pictures/Screenshots/$(date +'Screenshot from %Y-%m-%d %H-%M-%S').png"
-        "CTRL, Print, exec, grimblast --notify copysave output ~/Pictures/Screenshots/$(date +'Screenshot from %Y-%m-%d %H-%M-%S').png"
-        "ALT, Print, exec, grimblast --notify copysave active ~/Pictures/Screenshots/$(date +'Screenshot from %Y-%m-%d %H-%M-%S').png"
+        "$mod, S, exec, grimblast --notify copysave area"
+        "CTRL, Print, exec, grimblast --notify copysave output"
+        "ALT, Print, exec, grimblast --notify copysave active"
 
         # ── Floating Toggle ────────────────────────────────────────
         "$mod, V, togglefloating"
@@ -1175,8 +1175,8 @@
   # ── Git ───────────────────────────────────────────────────────────────
   programs.git = {
     enable = true;
-    userName = "Owen"; # Change to your name
-    userEmail = "owen@example.com"; # Change to your email
+    userName = "Owen Orsetti"; # Change to your name
+    userEmail = "owen.orsetti@gmail.com"; # Change to your email
   };
 
   # ── Yazi (default file manager + file picker) ─────────────────────────
@@ -1188,6 +1188,15 @@
         show_hidden = true;
         sort_dir_first = true;
       };
+    };
+  };
+
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+    pictures = "${config.home.homeDirectory}/Pictures";
+    extraConfig = {
+      XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
     };
   };
 
