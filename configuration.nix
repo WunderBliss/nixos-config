@@ -206,6 +206,10 @@
   # ── Steam ────────────────────────────────────────────────────────────
   programs.steam = {
     enable = true;
+    extraPackages = with pkgs; [
+      gamescope
+      mangohud
+    ];
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
   };
@@ -306,6 +310,7 @@
       jdk17
       android-tools
       modrinth-app
+      haskellPackages.pandoc-cli
     ]
     ++ [
       # Zen Browser from flake

@@ -126,6 +126,7 @@
       supabase-cli
       stripe-cli
       gh
+      mangojuice
     ];
   };
 
@@ -736,6 +737,12 @@
     matchBlocks = {
       "github.com" = {
         identityFile = "~/.ssh/id_ed25519";
+      };
+      "home-server" = {
+        hostname = "192.168.11.20";
+        extraOptions = {
+          SetEnv = "TERM=xterm-256color";
+        };
       };
     };
   };
