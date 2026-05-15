@@ -576,7 +576,7 @@
       stylua
       nixfmt-rfc-style
       prettierd
-      nodePackages.typescript-language-server
+      typescript-language-server
       gdtoolkit_4
     ];
   };

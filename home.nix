@@ -122,11 +122,12 @@
         ''
       )
       nodejs_22
-      nodePackages.pnpm
+      pnpm
       supabase-cli
       stripe-cli
       gh
       mangojuice
+      xivlauncher
     ];
   };
 
