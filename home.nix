@@ -1185,6 +1185,7 @@
     enable = true;
     userName = "Owen Orsetti"; # Change to your name
     userEmail = "owen.orsetti@gmail.com"; # Change to your email
+    init.defaultBranch = "main";
   };
 
   # ── Yazi (default file manager + file picker) ─────────────────────────
