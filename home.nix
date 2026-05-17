@@ -11,7 +11,7 @@
 {
   imports = [
     # NixVim home-manager module
-    inputs.nixvim.homeManagerModules.nixvim
+    inputs.nixvim.homeModules.nixvim
 
     # DankMaterialShell home-manager module
     inputs.dms.homeModules.dank-material-shell
@@ -128,6 +128,7 @@
       gh
       mangojuice
       xivlauncher
+      r2modman
     ];
   };
 
@@ -736,7 +737,7 @@
     enable = true;
     addKeysToAgent = "yes";
     matchBlocks = {
-      "github.com" = {
+      "homeModules.com" = {
         identityFile = "~/.ssh/id_ed25519";
       };
       "home-server" = {
@@ -1185,7 +1186,7 @@
     enable = true;
     userName = "Owen Orsetti"; # Change to your name
     userEmail = "owen.orsetti@gmail.com"; # Change to your email
-    init.defaultBranch = "main";
+    extraConfig.init.defaultBranch = "main";
   };
 
   # ── Yazi (default file manager + file picker) ─────────────────────────
