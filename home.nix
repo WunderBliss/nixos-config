@@ -64,26 +64,26 @@
           emuLibs = symlinkJoin {
             name = "android-emulator-libs";
             paths = with pkgs; [
-              xorg.libX11
-              xorg.libXext
-              xorg.libXrender
-              xorg.libXrandr
-              xorg.libXi
-              xorg.libXcursor
-              xorg.libXfixes
-              xorg.libXcomposite
-              xorg.libXdamage
-              xorg.libXtst
-              xorg.libxkbfile
-              xorg.libSM
-              xorg.libICE
+              libx11
+              libxext
+              libxrender
+              libxrandr
+              libxi
+              libxcursor
+              libxfixes
+              libxcomposite
+              libxdamage
+              libxtst
+              libxkbfile
+              libsm
+              libice
               libxcb
               libxkbcommon
               xcb-util-cursor
-              xorg.xcbutilimage
-              xorg.xcbutilkeysyms
-              xorg.xcbutilrenderutil
-              xorg.xcbutilwm
+              libxcb-image
+              libxcb-keysyms
+              libxcb-render-util
+              libxcb-wm
               libGL
               mesa
               vulkan-loader
@@ -735,8 +735,10 @@
   services.ssh-agent.enable = true;
   programs.ssh = {
     enable = true;
-    addKeysToAgent = "yes";
     matchBlocks = {
+      "*" = {
+        addKeysToAgent = "yes";
+      };
       "homeModules.com" = {
         identityFile = "~/.ssh/id_ed25519";
       };
@@ -1049,6 +1051,7 @@
       name = "adw-gtk3-dark";
       package = pkgs.adw-gtk3;
     };
+    gtk4.theme = null;
     iconTheme = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
@@ -1188,15 +1191,18 @@
   # ── Git ───────────────────────────────────────────────────────────────
   programs.git = {
     enable = true;
-    userName = "Owen Orsetti"; # Change to your name
-    userEmail = "owen.orsetti@gmail.com"; # Change to your email
-    extraConfig.init.defaultBranch = "main";
+    settings = {
+      user.name = "Owen Orsetti";
+      user.email = "owen.orsetti@gmail.com";
+      init.defaultBranch = "main";
+    };
   };
 
   # ── Yazi (default file manager + file picker) ─────────────────────────
   programs.yazi = {
     enable = true;
     enableFishIntegration = true;
+    shellWrapperName = "y";
     settings = {
       yazi = {
         show_hidden = true;
@@ -1208,9 +1214,10 @@
   xdg.userDirs = {
     enable = true;
     createDirectories = true;
+    setSessionVariables = true;
     pictures = "${config.home.homeDirectory}/Pictures";
     extraConfig = {
-      XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
+      SCREENSHOTS = "${config.home.homeDirectory}/Pictures/Screenshots";
     };
   };
 

@@ -233,16 +233,16 @@
     enable = true;
     libraries = with pkgs; [
       # X11 / XWayland (emulator UI runs via XWayland on Wayland compositors)
-      xorg.libX11
-      xorg.libXext
-      xorg.libXrender
-      xorg.libXrandr
-      xorg.libXi
-      xorg.libXcursor
-      xorg.libXfixes
-      xorg.libXcomposite
-      xorg.libXdamage
-      xorg.libXtst
+      libx11
+      libxext
+      libxrender
+      libxrandr
+      libxi
+      libxcursor
+      libxfixes
+      libxcomposite
+      libxdamage
+      libxtst
       libxcb
       # OpenGL / Vulkan
       libGL
@@ -282,7 +282,7 @@
       lazygit
       ghostty
       obsidian
-      protonvpn-gui
+      proton-vpn
       lact
       yazi
       protonup-qt
@@ -311,6 +311,7 @@
       android-tools
       modrinth-app
       haskellPackages.pandoc-cli
+      docker
     ]
     ++ [
       # Zen Browser from flake

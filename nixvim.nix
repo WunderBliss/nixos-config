@@ -70,8 +70,10 @@
       # ── File Explorer (neo-tree) ──────────────────────────────────
       neo-tree = {
         enable = true;
-        closeIfLastWindow = true;
-        filesystem.followCurrentFile.enabled = true;
+        settings = {
+          close_if_last_window = true;
+          filesystem.follow_current_file.enabled = true;
+        };
       };
 
       # ── Fuzzy Finder (telescope) ──────────────────────────────────
@@ -574,7 +576,7 @@
       ripgrep
       fd
       stylua
-      nixfmt-rfc-style
+      nixfmt
       prettierd
       typescript-language-server
       gdtoolkit_4
