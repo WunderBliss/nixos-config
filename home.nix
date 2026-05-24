@@ -1090,6 +1090,10 @@
         godot4 $argv
         systemctl --user restart hypridle
       end
+
+      function md2clip
+        pandoc -f markdown -t html $argv | wl-copy --type text/html
+      end
     '';
   };
 
