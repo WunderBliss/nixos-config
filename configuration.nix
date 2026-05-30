@@ -312,6 +312,7 @@
       modrinth-app
       haskellPackages.pandoc-cli
       docker
+      heroic
     ]
     ++ [
       # Zen Browser from flake
