@@ -313,7 +313,6 @@
       haskellPackages.pandoc-cli
       docker
       heroic
-      nodePackages.vercel
     ]
     ++ [
       # Zen Browser from flake
