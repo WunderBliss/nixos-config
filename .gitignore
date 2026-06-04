@@ -1,0 +1,25 @@
+# Nix build outputs
+result
+result-*
+
+# direnv
+.direnv/
+.envrc.local
+
+# Editor scratch
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local secrets / overrides (sops-nix encrypted files are *not* ignored)
+*.local.nix
+secrets/*.unencrypted.*
+
+# VM images, accidentally-dropped binaries
+*.qcow2
+*.iso
+
+# OS junk
+.DS_Store
+Thumbs.db
