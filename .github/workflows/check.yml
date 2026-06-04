@@ -1,0 +1,45 @@
+name: Check
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  format:
+    name: Format check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+      - name: nix fmt --check
+        # Requires `formatter.${system}` in flake.nix (added in PR #1).
+        # If running before that PR lands, this step will fail.
+        run: nix fmt -- --check .
+
+  eval:
+    name: Flake eval
+    runs-on: ubuntu-latest
+    # Heavier check: pulls all flake inputs (nix-citizen, nix-gaming, etc.)
+    # and evaluates the NixOS configuration. Marked continue-on-error
+    # because a single flaky upstream input shouldn't block the PR.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+      - name: nix flake check (eval only, no build, no IFD)
+        run: nix flake check --no-build --show-trace
+      - name: Evaluate NixOS configuration
+        run: |
+          nix eval --raw \
+            .#nixosConfigurations.nixos.config.system.build.toplevel.drvPath \
+            --show-trace
