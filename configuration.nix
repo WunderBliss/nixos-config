@@ -56,6 +56,10 @@
     "fs.file-max" = 524288; # High open file descriptor limit
   };
 
+  # Disables AMD IOMMU. Required for Star Citizen stability — the SC anti-cheat
+  # interacts badly with IOMMU on AMD platforms (random GPU resets / crashes).
+  # Side-effects: no GPU passthrough to VMs, weaker DMA isolation. Re-enable
+  # (delete this line) if you stop playing SC.
   boot.kernelParams = [ "amd_iommu=off" ];
 
   # ── Bootloader (systemd-boot) ────────────────────────────────────────
@@ -118,10 +122,6 @@
   };
 
   # ── Display Manager — dms-greeter via greetd ─────────────────────────
-  # ⚠ VERIFY: confirm DMS greeter supports compositor.name = "hyprland"
-  # and that it invokes start-hyprland (not bare Hyprland) for the session.
-  # If the greeter doesn't use start-hyprland automatically, you may need:
-  #   compositor.command = "start-hyprland";
   services.displayManager.dms-greeter = {
     enable = true;
     compositor.name = "hyprland";
@@ -130,22 +130,6 @@
       "/home/owen/.config/DankMaterialShell/settings.json"
     ];
   };
-
-  # ── Fallback: greetd session command ──────────────────────────────────
-  # If DMS greeter doesn't support compositor.name for Hyprland, or
-  # doesn't use start-hyprland, you can configure greetd directly:
-  # services.greetd = {
-  #   enable = true;
-  #   settings = {
-  #     default_session = {
-  #       command = "start-hyprland";
-  #       user = "owen";
-  #     };
-  #   };
-  # };
-
-  # ── XWayland (Hyprland handles this natively) ────────────────────────
-  programs.xwayland.enable = true;
 
   # ── Portal / Desktop Integration ──────────────────────────────────────
   xdg.portal = {
@@ -176,7 +160,9 @@
   };
 
   # ── D-Bus & Polkit ───────────────────────────────────────────────────
-  services.dbus.packages = [ pkgs.nautilus ];
+  # services.dbus.packages = [ pkgs.nautilus ];  # likely redundant — nautilus
+  # ships its own dbus service files via environment.systemPackages. Re-enable
+  # if file-manager dbus integration breaks.
   security.polkit.enable = true;
 
   # ── LACT (AMD GPU control) ───────────────────────────────────────────
@@ -309,7 +295,6 @@
     NIXOS_OZONE_WL = "1"; # Electron apps → Wayland
     MOZ_ENABLE_WAYLAND = "1"; # Firefox/Zen → Wayland
     QT_QPA_PLATFORM = "wayland";
-    # SDL_VIDEODRIVER = "wayland";
     GDK_BACKEND = "wayland,x11";
     XDG_SESSION_TYPE = "wayland";
     XDG_CURRENT_DESKTOP = "Hyprland";

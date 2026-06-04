@@ -16,11 +16,6 @@
     # DankMaterialShell home-manager module
     inputs.dms.homeModules.dank-material-shell
 
-    # ⚠ VERIFY: Does DMS expose a homeModules.hyprland?
-    # If not, remove this line and handle Hyprland startup/keybinds manually.
-    # The niri equivalent was: inputs.dms.homeModules.niri
-    # inputs.dms.homeModules.hyprland
-
     inputs.walker.homeManagerModules.default
     # Modular config files
     ./nixvim.nix
@@ -31,6 +26,8 @@
   home = {
     username = "owen";
     homeDirectory = "/home/owen";
+    # Do NOT change stateVersion after initial install. It pins compatibility
+    # for stateful options whose defaults have evolved.
     stateVersion = "24.11";
 
     # ── Android SDK PATH additions (SDK itself installed by Android Studio) ─
@@ -655,9 +652,6 @@
     enable = true;
     matchBlocks = {
       "*" = {
-        addKeysToAgent = "yes";
-      };
-      "homeModules.com" = {
         identityFile = "~/.ssh/id_ed25519";
       };
       "home-server" = {
