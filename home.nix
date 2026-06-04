@@ -24,6 +24,8 @@
     inputs.walker.homeManagerModules.default
     # Modular config files
     ./nixvim.nix
+    ./modules/user-packages.nix
+    ./modules/user-extras.nix
   ];
 
   home = {
@@ -42,95 +44,11 @@
     sessionVariables = {
       LD_LIBRARY_PATH = "${pkgs.sqlite.out}/lib";
     };
-
-    # ── Extra Packages ────────────────────────────────────────────────
-    packages = with pkgs; [
-      # Star Citizen via nix-citizen (LUG recommended for NixOS)
-      inputs.nix-citizen.packages.${system}.rsi-launcher # Recommended package
-      #inputs.nix-citizen.packages.${system}.lug-helper     # LUG Helper tool
-      inputs.claude-code.packages.${system}.default
-      claude-desktop-bin.packages.${system}.default
-      # Godot wrapper: clears stale D-Bus screensaver inhibitor after exit
-      (writeShellScriptBin "godot-launcher" ''
-        godot4 "$@"
-        systemctl --user restart hypridle
-      '')
-
-      # Android emulator wrapper: merges all needed libs into one dir so
-      # LD_LIBRARY_PATH stays short. No bwrap/namespaces required.
-      # Usage: android-emulator -avd <avd-name>
-      (
-        let
-          emuLibs = symlinkJoin {
-            name = "android-emulator-libs";
-            paths = with pkgs; [
-              xorg.libX11
-              xorg.libXext
-              xorg.libXrender
-              xorg.libXrandr
-              xorg.libXi
-              xorg.libXcursor
-              xorg.libXfixes
-              xorg.libXcomposite
-              xorg.libXdamage
-              xorg.libXtst
-              xorg.libxkbfile
-              xorg.libSM
-              xorg.libICE
-              libxcb
-              libxkbcommon
-              xcb-util-cursor
-              xorg.xcbutilimage
-              xorg.xcbutilkeysyms
-              xorg.xcbutilrenderutil
-              xorg.xcbutilwm
-              libGL
-              mesa
-              vulkan-loader
-              stdenv.cc.cc.lib
-              zlib
-              zstd
-              glib
-              dbus
-              freetype
-              fontconfig
-              libpng
-              pixman
-              bzip2
-              nss
-              nspr
-              libdrm
-              libuuid
-              curl
-              expat
-              libxml2
-              libbsd
-              libepoxy
-              libslirp
-              libcap_ng
-              libseccomp
-              numactl
-              alsa-lib
-              libpulseaudio
-            ];
-          };
-        in
-        writeShellScriptBin "android-emulator" ''
-          export LD_LIBRARY_PATH="${emuLibs}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-          export QT_QPA_PLATFORM=xcb
-          exec "$HOME/Android/Sdk/emulator/emulator.bin" "$@"
-        ''
-      )
-      nodejs_22
-      pnpm
-      supabase-cli
-      stripe-cli
-      gh
-      mangojuice
-      xivlauncher
-      r2modman
-    ];
   };
+
+  # User packages live in ./modules/user-packages.nix (managed by nixadd)
+  # and ./modules/user-extras.nix (hand-edited).
+
 
   # Walker / Elephant
   programs.walker = {
