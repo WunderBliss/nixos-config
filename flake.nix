@@ -9,14 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Hyprspace – overview plugin for Hyprland
-    # If hyprlandPlugins.hyprspace exists in your nixpkgs, you can remove
-    # this input and use the nixpkgs version instead (simpler).
-    # hyprspace = {
-    #  url = "github:KZDKM/Hyprspace";
-    #  inputs.hyprland.follows = "nixpkgs";
-    #};
-
     # DankMaterialShell – desktop shell
     # ⚠ VERIFY: confirm DMS has Hyprland support (homeModules.hyprland)
     dms = {
@@ -105,6 +97,8 @@
       };
     in
     {
+      formatter.${system} = pkgs.nixfmt-rfc-style;
+
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs system; };

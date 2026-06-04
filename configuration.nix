@@ -11,6 +11,8 @@
   imports = [
     ./hardware-configuration.nix
     inputs.claude-cowork-service.nixosModules.default
+    ./modules/system-packages.nix
+    ./modules/system-extras.nix
   ];
 
   # ── Extra Filesystems ─────────────────────────────────────────────────
@@ -274,52 +276,8 @@
     ];
   };
 
-  environment.systemPackages =
-    with pkgs;
-    [
-      git
-      neovim
-      lazygit
-      ghostty
-      obsidian
-      proton-vpn
-      lact
-      yazi
-      protonup-qt
-      wl-clipboard # Wayland clipboard utils
-      nautilus # Needed for portal-gnome file chooser fallback
-      brightnessctl # Backlight control
-      playerctl # MPRIS media control
-      networkmanagerapplet
-      glib # gsettings for GTK theming
-      adw-gtk3 # GTK3 theme that DMS matugen can target
-      adwaita-icon-theme # Fallback icons
-      fish # Default shell
-      starship # Prompt
-      grimblast # Screenshot tool for Hyprland (replaces niri built-in)
-      slurp # Region selection for screenshots
-      grim # Base screenshot utility
-      hyprpicker # Color picker for Hyprland
-      vesktop
-      fastfetch
-      virt-viewer # SPICE/VNC display client for VMs
-      godot_4
-      # Flutter / Android development
-      flutter
-      android-studio
-      jdk17
-      android-tools
-      modrinth-app
-      haskellPackages.pandoc-cli
-      docker
-      heroic
-    ]
-    ++ [
-      # Zen Browser from flake
-      inputs.zen-browser.packages.${system}.default
-      # Claude Desktop from flake
-      #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
-    ];
+  # System packages live in ./modules/system-packages.nix (managed by nixadd)
+  # and ./modules/system-extras.nix (hand-edited).
 
   # Claude Cowork service from flake
   services.claude-cowork.enable = true;
