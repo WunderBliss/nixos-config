@@ -102,6 +102,7 @@
       "libvirtd"
       "kvm"
       "adbusers"
+      "plugdev" # ZSA keyboard flashing (Oryx/Keymapp/Wally)
     ];
     shell = pkgs.fish;
   };
@@ -337,6 +338,12 @@
     };
   };
   programs.virt-manager.enable = true;
+
+  # ── ZSA Keyboards (Voyager/Moonlander/Ergodox/Planck) ────────────────
+  # Installs zsa-udev-rules (the official 50-zsa.rules) and creates the
+  # plugdev group. The owen user is added to plugdev above so Oryx web
+  # flashing, Keymapp, and Wally can access the keyboard.
+  hardware.keyboard.zsa.enable = true;
 
   # ── Misc Services ────────────────────────────────────────────────────
   services.gvfs.enable = true; # Trash, network mounts in file manager

@@ -18,6 +18,7 @@
     supabase-cli
     xivlauncher
     heroic
+    chromium
     # END NIXADD
   ];
 }
