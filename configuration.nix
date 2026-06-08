@@ -213,6 +213,11 @@
     openFirewall = true;
   };
 
+  # ---   # --- TailScale ------------------------------------------------------------
+  services.tailscale = {
+    enable = true;
+  }
+
   # ── System Packages ──────────────────────────────────────────────────
   # ── Android / Flutter Development ────────────────────────────────────
   # nix-ld provides a dynamic linker stub so pre-built FHS binaries

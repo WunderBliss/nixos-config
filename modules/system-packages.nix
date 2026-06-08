@@ -53,6 +53,8 @@
     virt-viewer # SPICE/VNC display client for VMs
     wl-clipboard # Wayland clipboard utils
     yazi
+    zip
+    freerdp3
     # END NIXADD
   ];
 }

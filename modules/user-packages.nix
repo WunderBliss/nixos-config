@@ -17,7 +17,7 @@
     stripe-cli
     supabase-cli
     xivlauncher
-    heroid
+    heroic
     # END NIXADD
   ];
 }
