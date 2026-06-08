@@ -54,7 +54,7 @@
     wl-clipboard # Wayland clipboard utils
     yazi
     zip
-    freerdp3
+    freerdp
     # END NIXADD
   ];
 }
