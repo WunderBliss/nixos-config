@@ -55,6 +55,8 @@
     yazi
     zip
     freerdp
+    kitty
+    hyprlauncher
     # END NIXADD
   ];
 }
