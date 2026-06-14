@@ -46,7 +46,6 @@
   # User packages live in ./modules/user-packages.nix (managed by nixadd)
   # and ./modules/user-extras.nix (hand-edited).
 
-
   # Walker / Elephant
   programs.walker = {
     enable = true;
@@ -730,12 +729,6 @@
           mode = "5120x1440@144";
           position = "0x0";
           scale = 1;
-          #bitdepth = 10;
-          #cm = "hdr";
-          #sdrbrightness = 1.4;
-          #sdrsaturation = 1.6;
-          vrr = 1;
-          #supports_hdr = true;
         }
       ];
 
@@ -806,28 +799,6 @@
         force_default_wallpaper = 0;
       };
 
-      # ── Hyprspace (Overview Plugin) ─────────────────────────────────
-      # ⚠ VERIFY: config keys may vary by hyprspace version — check
-      #   https://github.com/KZDKM/Hyprspace for current options.
-      plugin = {
-        overview = {
-          # Show all workspaces in the overview
-          showNewWorkspace = true;
-          showEmptyWorkspace = true;
-
-          # Drag windows between workspaces in overview
-          dragAlpha = 0.8;
-
-          # Gap between workspace thumbnails
-          gapsIn = 8;
-          gapsOut = 16;
-
-          # Exit overview on workspace switch
-          exitOnSwitch = true;
-          exitOnClick = true;
-        };
-      };
-
       # ── Window Rules ────────────────────────────────────────────────
       windowrule = [
         # Polkit / audio popups float (was niri: authentication-agent-1|pwvucontrol)
@@ -868,7 +839,7 @@
 
         # ── Window Management ──────────────────────────────────────
         "$mod, Q, killactive"
-        "$mod SHIFT, E, exit"
+        # "$mod SHIFT, E, exit"
 
         # ── Focus (vim keys — same as your niri setup) ─────────────
         "$mod, H, layoutmsg, focus l"
