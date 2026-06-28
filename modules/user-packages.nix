@@ -19,6 +19,7 @@
     xivlauncher
     heroic
     chromium
+    parsec-bin
     # END NIXADD
   ];
 }
