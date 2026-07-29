@@ -10,7 +10,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    inputs.claude-cowork-service.nixosModules.default
+    # inputs.claude-cowork-service.nixosModules.default
     ./modules/system-packages.nix
     ./modules/system-extras.nix
   ];
@@ -272,7 +272,7 @@
   # and ./modules/system-extras.nix (hand-edited).
 
   # Claude Cowork service from flake
-  services.claude-cowork.enable = true;
+  #services.claude-cowork.enable = true;
 
   # 1password
   programs._1password.enable = true;

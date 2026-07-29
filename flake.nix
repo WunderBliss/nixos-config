@@ -64,14 +64,14 @@
     #};
 
     # Claude desktop bin
-    claude-desktop-bin = {
-      url = "github:patrickjaja/claude-desktop-bin";
-    };
+    #claude-desktop-bin = {
+    #url = "github:patrickjaja/claude-desktop-bin";
+    #};
 
     # Claude Cowork
-    claude-cowork-service = {
-      url = "github:patrickjaja/claude-cowork-service";
-    };
+    #claude-cowork-service = {
+    #url = "github:patrickjaja/claude-cowork-service";
+    #};
   };
 
   outputs =
@@ -86,7 +86,7 @@
       nix-gaming,
       nixvim,
       walker,
-      claude-desktop-bin,
+      # claude-desktop-bin,
       ...
     }@inputs:
     let
@@ -115,7 +115,7 @@
               backupFileExtension = "hm-backup";
               extraSpecialArgs = {
                 inherit inputs system;
-                inherit claude-desktop-bin;
+                # inherit claude-desktop-bin;
               };
               users.owen = import ./home.nix;
             };

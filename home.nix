@@ -40,6 +40,9 @@
     # sqlite3 shared lib needed by Drift/Flutter unit tests on Linux
     sessionVariables = {
       LD_LIBRARY_PATH = "${pkgs.sqlite.out}/lib";
+      # CLI/TUI tools (nvim gx, lazygit, gh browse) read $BROWSER rather than
+      # the XDG mime defaults below.
+      BROWSER = "zen-beta";
     };
   };
 
@@ -913,12 +916,30 @@
     };
   };
 
-  # ── Default Applications (yazi as file manager) ───────────────────────
+  # ── Default Applications (yazi as file manager, Zen as browser) ───────
+  # Zen has to be declared explicitly: chromium's desktop entry also claims
+  # text/html and http(s), so with no default recorded the winner is whatever
+  # mimeinfo.cache happens to list first — which chromium won. Zen then sees
+  # itself as non-default and nags on every launch.
   xdg.mimeApps = {
     enable = true;
-    defaultApplications = {
-      "inode/directory" = [ "yazi.desktop" ];
-    };
+    defaultApplications =
+      let
+        zen = [ "zen-beta.desktop" ];
+      in
+      {
+        "inode/directory" = [ "yazi.desktop" ];
+
+        "text/html" = zen;
+        "text/xml" = zen;
+        "application/xhtml+xml" = zen;
+        "application/xml" = zen;
+        "application/vnd.mozilla.xul+xml" = zen;
+        "x-scheme-handler/http" = zen;
+        "x-scheme-handler/https" = zen;
+        "x-scheme-handler/about" = zen;
+        "x-scheme-handler/unknown" = zen;
+      };
   };
 
   xdg.desktopEntries."org.godotengine.Godot4.6" = {

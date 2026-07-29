@@ -2,7 +2,7 @@
   pkgs,
   inputs,
   system,
-  claude-desktop-bin,
+  #claude-desktop-bin,
   ...
 }:
 
@@ -16,7 +16,7 @@
     # inputs.nix-citizen.packages.${system}.lug-helper
 
     inputs.claude-code.packages.${system}.default
-    claude-desktop-bin.packages.${system}.default
+    #claude-desktop-bin.packages.${system}.default
 
     # Godot wrapper: clears stale D-Bus screensaver inhibitor after exit
     (pkgs.writeShellScriptBin "godot-launcher" ''
