@@ -653,6 +653,12 @@
   programs.ssh = {
     enable = true;
     matchBlocks = {
+      "strix" = {
+        hostname = "192.168.11.28";
+        user = "owen";
+        identityFile = "~/.ssh/id_ed25519_strix";
+        identitiesOnly = "yes";
+      };
       "*" = {
         identityFile = "~/.ssh/id_ed25519";
       };
