@@ -10,7 +10,6 @@
     # BEGIN NIXADD
     comma # Run packages without installing: `, cowsay hi`
     gh
-    mangojuice
     nodejs_22
     pnpm
     r2modman
@@ -19,7 +18,7 @@
     xivlauncher
     heroic
     chromium
-    parsec-bin
+    codex
     # END NIXADD
   ];
 }

@@ -657,7 +657,7 @@
         hostname = "192.168.11.28";
         user = "owen";
         identityFile = "~/.ssh/id_ed25519_strix";
-        identitiesOnly = "yes";
+        identitiesOnly = true;
       };
       "*" = {
         identityFile = "~/.ssh/id_ed25519";
