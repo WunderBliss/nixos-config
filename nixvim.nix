@@ -333,9 +333,28 @@
       conform-nvim = {
         enable = true;
         settings = {
+          # Markdown is exempt from format-on-save entirely.
+          #
+          # The empty `markdown = [ ]` below is NOT sufficient on its own:
+          # conform falls through to the `"_"` fallback (trim_whitespace) when a
+          # filetype's formatter list is empty, so markdown still got rewritten
+          # on save. Verified empirically 2026-08-22 — do not "simplify" this
+          # back into a plain table.
+          #
+          # Why it matters: any byte change to a markdown file under aubade's
+          # `judges/<metric>/` (prompt.md, grounding/) changes the directory's
+          # judge_content_hash, which no longer matches the stamp in
+          # calibration.md — a loud refusal, exit 20 (05 §3.4.7). Stripping
+          # trailing whitespace also destroys markdown hard line breaks.
           format_on_save = {
-            timeout_ms = 500;
-            lsp_fallback = true;
+            __raw = ''
+              function(bufnr)
+                if vim.bo[bufnr].filetype == "markdown" then
+                  return nil
+                end
+                return { timeout_ms = 500, lsp_fallback = true }
+              end
+            '';
           };
           formatters_by_ft = {
             lua = [ "stylua" ];
@@ -347,7 +366,10 @@
             yaml = [ "prettierd" ];
             css = [ "prettierd" ];
             html = [ "prettierd" ];
-            markdown = [ "prettierd" ];
+            # Markdown unformatted by intent; prettierd rewrites *em* -> _em_,
+            # which causes issues for aubade. This empty list stops prettierd,
+            # but the real exemption is the format_on_save function above.
+            markdown = [ ];
             rust = [ "rustfmt" ];
             "_" = [ "trim_whitespace" ];
             gdscript = [ "gdformat" ];

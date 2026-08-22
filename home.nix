@@ -35,6 +35,7 @@
       "/home/owen/Android/Sdk/platform-tools"
       "/home/owen/Android/Sdk/emulator"
       "/home/owen/Android/Sdk/cmdline-tools/latest/bin"
+      "$HOME/.local/bin"
     ];
 
     # sqlite3 shared lib needed by Drift/Flutter unit tests on Linux
@@ -894,7 +895,7 @@
     enable = true;
     settings = {
       user.name = "Owen Orsetti";
-      user.email = "owen.orsetti@gmail.com";
+      user.email = "29517695+WunderBliss@users.noreply.github.com";
       init.defaultBranch = "main";
     };
   };
