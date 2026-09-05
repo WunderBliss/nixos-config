@@ -2,7 +2,6 @@
   pkgs,
   inputs,
   system,
-  #claude-desktop-bin,
   ...
 }:
 
@@ -15,8 +14,10 @@
     inputs.nix-citizen.packages.${system}.rsi-launcher
     # inputs.nix-citizen.packages.${system}.lug-helper
 
-    inputs.claude-code.packages.${system}.default
-    #claude-desktop-bin.packages.${system}.default
+    # AI coding CLIs via llm-agents (numtide). Desktop apps (Claude Desktop,
+    # ChatGPT) are system packages in ./system-extras.nix.
+    inputs.llm-agents.packages.${system}.claude-code
+    inputs.llm-agents.packages.${system}.codex
 
     # Godot wrapper: clears stale D-Bus screensaver inhibitor after exit
     (pkgs.writeShellScriptBin "godot-launcher" ''

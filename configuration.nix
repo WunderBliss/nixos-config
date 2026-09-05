@@ -10,7 +10,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    # inputs.claude-cowork-service.nixosModules.default
     ./modules/system-packages.nix
     ./modules/system-extras.nix
   ];
@@ -39,14 +38,15 @@
         "nix-command"
         "flakes"
       ];
-      # nix-citizen binary cache (Star Citizen wine builds)
+      # Binary caches: nix-citizen (Star Citizen wine builds) and numtide
+      # (llm-agents.nix — claude-desktop, claude-code, codex, chatgpt).
       substituters = [
         "https://nix-citizen.cachix.org"
-        "https://claude-code.cachix.org"
+        "https://cache.numtide.com"
       ];
       trusted-public-keys = [
         "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
-        "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       ];
       auto-optimise-store = true;
     };
@@ -255,6 +255,9 @@
     };
   };
 
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
+
   networking.firewall = {
     # Opens 22 on all interfaces — LAN-only in practice because this host sits
     # behind the router's NAT. Needed for clients not on the tailnet, e.g. strix.
@@ -315,9 +318,6 @@
 
   # System packages live in ./modules/system-packages.nix (managed by nixadd)
   # and ./modules/system-extras.nix (hand-edited).
-
-  # Claude Cowork service from flake
-  #services.claude-cowork.enable = true;
 
   # 1password
   programs._1password.enable = true;
@@ -383,6 +383,15 @@
     };
   };
   programs.virt-manager.enable = true;
+
+  # ── Claude Desktop: Cowork micro-VM host support ─────────────────────
+  # Cowork runs agent tasks in a QEMU/KVM guest launched by the desktop app.
+  # It needs /dev/kvm and /dev/vhost-vsock; owen is in `kvm` above and udev
+  # hands that group both nodes. vhost_vsock normally autoloads on first
+  # open, but load it at boot so the app's launch-time check never races it.
+  # QEMU and the UEFI firmware live inside the app's FHS env (see
+  # modules/system-extras.nix) because bwrap hides the host /usr from it.
+  boot.kernelModules = [ "vhost_vsock" ];
 
   # ── ZSA Keyboards (Voyager/Moonlander/Ergodox/Planck) ────────────────
   # Installs zsa-udev-rules (the official 50-zsa.rules) and creates the

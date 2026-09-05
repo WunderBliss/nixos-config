@@ -4,7 +4,6 @@
   inputs,
   system,
   lib,
-  claude-desktop-bin,
   ...
 }:
 

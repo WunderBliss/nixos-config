@@ -48,24 +48,13 @@
       inputs.elephant.follows = "elephant";
     };
 
-    # Claude Code
-    claude-code.url = "github:sadjow/claude-code-nix";
+    # AI agent tooling (numtide): Claude Desktop, Claude Code, Codex, ChatGPT
+    # desktop, and ~180 others, bumped by CI as upstream releases land.
+    # claude-desktop is Anthropic's official Linux .deb repackaged with
+    # autoPatchelf + buildFHSEnv. Deliberately NOT following our nixpkgs:
+    # numtide's binary cache (configuration.nix) only hits on their pin.
+    llm-agents.url = "github:numtide/llm-agents.nix";
 
-    # Claude Desktop
-    #claude-desktop = {
-    #url = "github:k3d3/claude-desktop-linux-flake";
-    #inputs.nixpkgs.follows = "nixpkgs";
-    #};
-
-    # Claude desktop bin
-    #claude-desktop-bin = {
-    #url = "github:patrickjaja/claude-desktop-bin";
-    #};
-
-    # Claude Cowork
-    #claude-cowork-service = {
-    #url = "github:patrickjaja/claude-cowork-service";
-    #};
   };
 
   outputs =
@@ -79,7 +68,6 @@
       nix-gaming,
       nixvim,
       walker,
-      # claude-desktop-bin,
       ...
     }@inputs:
     let
@@ -109,7 +97,6 @@
               backupFileExtension = "hm-backup";
               extraSpecialArgs = {
                 inherit inputs system;
-                # inherit claude-desktop-bin;
               };
               users.owen = import ./home.nix;
             };

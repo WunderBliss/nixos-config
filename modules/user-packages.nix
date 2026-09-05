@@ -18,7 +18,6 @@
     xivlauncher
     heroic
     chromium
-    codex
     # END NIXADD
   ];
 }
