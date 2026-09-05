@@ -16,12 +16,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # dgop – system monitoring backend for DMS
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Zen Browser
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
@@ -80,7 +74,6 @@
       nixpkgs,
       home-manager,
       dms,
-      dgop,
       zen-browser,
       nix-citizen,
       nix-gaming,
@@ -97,13 +90,14 @@
       };
     in
     {
-      formatter.${system} = pkgs.nixfmt-rfc-style;
+      formatter.${system} = pkgs.nixfmt;
 
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs system; };
         modules = [
-          ./hardware-configuration.nix
+          # hardware-configuration.nix is imported by configuration.nix, which
+          # is the machine-specific half of this pair.
           ./configuration.nix
 
           # Home-manager as a NixOS module

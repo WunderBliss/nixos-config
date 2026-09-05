@@ -51,7 +51,7 @@ After a rebuild, `nvd diff /run/current-system /nix/var/nix/profiles/system` sho
 ## Formatter
 
 ```bash
-nix fmt        # formats every .nix file in the repo (nixfmt-rfc-style)
+nix fmt        # formats every .nix file in the repo (nixfmt)
 ```
 
 ## Local checks (optional)

@@ -32,26 +32,26 @@
         emuLibs = pkgs.symlinkJoin {
           name = "android-emulator-libs";
           paths = with pkgs; [
-            xorg.libX11
-            xorg.libXext
-            xorg.libXrender
-            xorg.libXrandr
-            xorg.libXi
-            xorg.libXcursor
-            xorg.libXfixes
-            xorg.libXcomposite
-            xorg.libXdamage
-            xorg.libXtst
-            xorg.libxkbfile
-            xorg.libSM
-            xorg.libICE
+            libx11
+            libxext
+            libxrender
+            libxrandr
+            libxi
+            libxcursor
+            libxfixes
+            libxcomposite
+            libxdamage
+            libxtst
+            libxkbfile
+            libsm
+            libice
             libxcb
             libxkbcommon
             xcb-util-cursor
-            xorg.xcbutilimage
-            xorg.xcbutilkeysyms
-            xorg.xcbutilrenderutil
-            xorg.xcbutilwm
+            libxcb-image
+            libxcb-keysyms
+            libxcb-render-util
+            libxcb-wm
             libGL
             mesa
             vulkan-loader

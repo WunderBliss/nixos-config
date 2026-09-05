@@ -73,7 +73,8 @@
     enableDynamicTheming = true; # ← matugen wallpaper-based theming
     enableAudioWavelength = true;
     enableClipboardPaste = true;
-    dgop.package = inputs.dgop.packages.${system}.default;
+    # NOTE: `dgop.package` was removed upstream — dgop is now a Go library
+    # compiled into the dms daemon, not a separate package DMS shells out to.
 
     settings = {
       currentThemeName = "dynamic";
@@ -653,21 +654,42 @@
   services.ssh-agent.enable = true;
   programs.ssh = {
     enable = true;
-    matchBlocks = {
+    # `settings` replaces the deprecated `matchBlocks`, and uses upstream
+    # ssh_config(5) directive names verbatim rather than camelCase aliases.
+    # Attribute names become `Host <name>`; the "*" block is always emitted
+    # last, so first-match-wins ordering still works.
+    #
+    # enableDefaultConfig is on its way out upstream, so the values it used to
+    # inject implicitly are now spelled out in the "*" block below, verbatim —
+    # the generated "Host *" block is unchanged from before the migration.
+    enableDefaultConfig = false;
+    settings = {
       "strix" = {
-        hostname = "192.168.11.28";
-        user = "owen";
-        identityFile = "~/.ssh/id_ed25519_strix";
-        identitiesOnly = true;
-      };
-      "*" = {
-        identityFile = "~/.ssh/id_ed25519";
+        HostName = "192.168.11.28";
+        User = "owen";
+        IdentityFile = "~/.ssh/id_ed25519_strix";
+        IdentitiesOnly = true;
       };
       "home-server" = {
-        hostname = "192.168.11.20";
-        extraOptions = {
-          SetEnv = "TERM=xterm-256color";
+        HostName = "192.168.11.20";
+        # `settings` renders SetEnv from an attrset (and quotes the value),
+        # where the old extraOptions passed the raw string through.
+        SetEnv = {
+          TERM = "xterm-256color";
         };
+      };
+      "*" = {
+        IdentityFile = "~/.ssh/id_ed25519";
+        ForwardAgent = false;
+        AddKeysToAgent = "no";
+        Compression = false;
+        ServerAliveInterval = 0;
+        ServerAliveCountMax = 3;
+        HashKnownHosts = false;
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ControlMaster = "no";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ControlPersist = "no";
       };
     };
   };
@@ -762,6 +784,7 @@
 
   # ── Cursor ────────────────────────────────────────────────────────────
   home.pointerCursor = {
+    enable = true;
     name = "Adwaita";
     package = pkgs.adwaita-icon-theme;
     size = 24;

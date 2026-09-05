@@ -21,10 +21,8 @@
     android-tools
     brightnessctl # Backlight control
     fastfetch
-    fish # Default shell
     flutter
     ghostty
-    git
     glib # gsettings for GTK theming
     godot_4
     grim # Base screenshot utility
@@ -36,19 +34,17 @@
     lazygit
     modrinth-app
     nautilus # Needed for portal-gnome file chooser fallback
-    neovim
     networkmanagerapplet
     nh # Better nixos-rebuild wrapper
     nix-output-monitor # Pretty build progress (used by nh automatically)
     nix-tree # Inspect closures / find bloat
     nvd # Diff generations after a rebuild
-    nixfmt-rfc-style # Official Nix formatter
+    nixfmt # Official Nix formatter
     obsidian
     playerctl # MPRIS media control
     protonup-qt
-    protonvpn-gui
+    proton-vpn
     slurp # Region selection for screenshots
-    starship # Prompt
     vesktop
     virt-viewer # SPICE/VNC display client for VMs
     wl-clipboard # Wayland clipboard utils

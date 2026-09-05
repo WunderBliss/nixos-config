@@ -28,7 +28,7 @@ This is a NixOS flake-based system configuration for a single host (`nixos`) wit
 
 **Files:**
 
-- `flake.nix` — inputs (nixpkgs, home-manager, DankMaterialShell, dgop, zen-browser, nix-citizen, nix-gaming, nixvim, walker, claude-code) and the single host output
+- `flake.nix` — inputs (nixpkgs, home-manager, DankMaterialShell, zen-browser, nix-citizen, nix-gaming, nixvim, walker, claude-code) and the single host output
 - `configuration.nix` — NixOS system config: boot, networking, Hyprland compositor, DMS greeter, audio (Pipewire), Steam, QEMU/KVM, system packages, fonts, Wayland env vars
 - `hardware-configuration.nix` — auto-generated hardware config (disk UUIDs, kernel modules); do not hand-edit
 - `home.nix` — home-manager config for user `owen`: DankMaterialShell, Hyprland window manager, hypridle, hyprlock, Ghostty terminal, GTK theming, fish shell, starship prompt, git, yazi file manager
@@ -39,7 +39,6 @@ This is a NixOS flake-based system configuration for a single host (`nixos`) wit
 | Input | Purpose |
 |---|---|
 | `dms` | DankMaterialShell — desktop shell/bar (bar, theming, notifications, lock screen) |
-| `dgop` | System monitoring backend for DMS |
 | `nixvim` | Declarative Neovim config as a home-manager module |
 | `walker` | App launcher (replaces rofi/wofi) |
 | `zen-browser` | Zen Browser (not in nixpkgs) |

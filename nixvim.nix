@@ -9,6 +9,17 @@
 {
   programs.nixvim = {
     enable = true;
+
+    # Reuse home-manager's pkgs instead of letting nixvim import a second
+    # nixpkgs instance of its own. Cheaper to evaluate, and nvim's packages
+    # come from the same set as the rest of the system — which is what
+    # `inputs.nixvim.inputs.nixpkgs.follows` was aiming at. Also silences
+    # nixvim's "affected by your flake input follows" warning, since that only
+    # fires when nixvim constructs the instance itself.
+    # Requires nixpkgs.{config,overlays,pkgs,hostPlatform,buildPlatform} to be
+    # left alone here — nixvim asserts on all five.
+    nixpkgs.useGlobalPackages = true;
+
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;

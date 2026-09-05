@@ -25,6 +25,13 @@
     ];
   };
 
+  # ── Swap ──────────────────────────────────────────────────────────────
+  # No swap partition exists (swapDevices is empty in hardware-configuration).
+  # zram gives a compressed in-RAM cushion before the OOM killer fires, which
+  # matters for Star Citizen / the Android emulator / VMs. Hibernate would
+  # need a real swap device and is deliberately not set up.
+  zramSwap.enable = true;
+
   # ── Nix Settings ──────────────────────────────────────────────────────
   nix = {
     settings = {
@@ -92,7 +99,10 @@
   users.users.owen = {
     isNormalUser = true;
     description = "Owen";
-    initialPassword = "owen";
+    # No initialPassword here on purpose — it renders into the world-readable
+    # Nix store. The password is set imperatively via `passwd` and persists
+    # because users.mutableUsers defaults to true. If this account ever needs
+    # to be declared, use hashedPasswordFile pointing outside the store.
     extraGroups = [
       "wheel"
       "networkmanager"
@@ -105,6 +115,16 @@
       "plugdev" # ZSA keyboard flashing (Oryx/Keymapp/Wally)
     ];
     shell = pkgs.fish;
+
+    # Public keys allowed to SSH in as owen (see services.openssh below).
+    # These come from the CLIENT you connect FROM — run `cat ~/.ssh/id_ed25519.pub`
+    # there and paste the line here. Empty list = nobody can log in.
+    openssh.authorizedKeys.keys = [
+      # SHA256:ON43s2afEpyBLLddGuLC2v4WXO+KLVAaXDd1ZXWdBls
+      # Added 2026-09-05. Key carried no comment field; rename this line if you
+      # want it to say which client it belongs to.
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE2kG6Jic5llmzoKrmoixvfGd+iATLQPxOrScqmI3Vd0"
+    ];
   };
 
   # ── Fish Shell (system-wide enable so it's in /etc/shells) ───────────
@@ -183,7 +203,7 @@
         Type = "oneshot";
         ExecStart = pkgs.writeShellScript "disable-usb-wakeup" ''
           for device in XHC0 XHC1 XHC2 XH00 UXHC; do
-            if grep -q "^$device.*enabled" /proc/acpi/wakeup; then
+            if ${pkgs.gnugrep}/bin/grep -q "^$device.*enabled" /proc/acpi/wakeup; then
               echo "$device" > /proc/acpi/wakeup
             fi
           done
@@ -217,6 +237,31 @@
   # ---   # --- TailScale ------------------------------------------------------------
   services.tailscale = {
     enable = true;
+  };
+
+  # ── SSH server (inbound) ─────────────────────────────────────────────
+  # Key-only auth. Keep password auth off — sudo here needs the account
+  # password (wheelNeedsPassword), so a password-accepting sshd would put that
+  # directly on the network. Client public keys go in authorizedKeys.keys
+  # above; an empty list means nobody can log in, which is the safe failure
+  # mode.
+  services.openssh = {
+    enable = true;
+    openFirewall = false; # opened explicitly below instead
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
+
+  networking.firewall = {
+    # Opens 22 on all interfaces — LAN-only in practice because this host sits
+    # behind the router's NAT. Needed for clients not on the tailnet, e.g. strix.
+    allowedTCPPorts = [ 22 ];
+    # Tailnet. Redundant while the line above is present, but keeps SSH
+    # reachable from the tailnet if LAN access is ever narrowed.
+    interfaces.tailscale0.allowedTCPPorts = [ 22 ];
   };
 
   # ── System Packages ──────────────────────────────────────────────────
