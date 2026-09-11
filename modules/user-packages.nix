@@ -18,6 +18,7 @@
     xivlauncher
     heroic
     chromium
+    qbittorrent
     # END NIXADD
   ];
 }
