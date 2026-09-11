@@ -19,6 +19,7 @@
     heroic
     chromium
     qbittorrent
+    p7zip
     # END NIXADD
   ];
 }
