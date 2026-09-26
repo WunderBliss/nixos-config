@@ -12,7 +12,6 @@
   home.packages = [
     # Star Citizen via nix-citizen (LUG recommended for NixOS)
     inputs.nix-citizen.packages.${system}.rsi-launcher
-    # inputs.nix-citizen.packages.${system}.lug-helper
 
     # AI coding CLIs via llm-agents (numtide). Desktop apps (Claude Desktop,
     # ChatGPT) are system packages in ./system-extras.nix.

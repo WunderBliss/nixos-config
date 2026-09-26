@@ -755,6 +755,54 @@
   xdg.configFile."hypr/config.lua".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/hyprland.lua";
 
+  # ── Japanese Input (fcitx5 + Mozc) ────────────────────────────────────
+  # Toggle English ⇄ Japanese with Shift+Tab. Note this shadows Shift+Tab
+  # inside apps whenever a text field is focused; change TriggerKeys below
+  # if that bites.
+  #
+  # waylandFrontend: Hyprland speaks input-method-v2 / text-input-v3, so
+  # GTK_IM_MODULE / QT_IM_MODULE are deliberately NOT exported (they
+  # double-commit on Wayland). XWayland apps still get XIM via XMODIFIERS.
+  # Electron/Chromium apps only see the IME with
+  # `--enable-wayland-ime --wayland-text-input-version=3`.
+  #
+  # The daemon is a systemd user unit bound to graphical-session.target,
+  # which the hyprland.start hook in hyprland.lua brings up. Config below is
+  # written to ~/.config/fcitx5 as store symlinks, so fcitx5-configtool
+  # cannot save — edit here instead. Mozc's own settings (romaji table,
+  # user dictionary) live in ~/.config/mozc and are still editable via
+  # `mozc_tool --mode=config_dialog`.
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5 = {
+      waylandFrontend = true;
+      addons = with pkgs; [ fcitx5-mozc ];
+      settings = {
+        globalOptions = {
+          Hotkey = {
+            EnumerateWithTriggerKeys = true;
+            EnumerateSkipFirst = false;
+          };
+          "Hotkey/TriggerKeys"."0" = "Shift+Tab";
+          # Empty section = no keys. fcitx5's default is a bare Shift_L tap,
+          # which silently drops back to English mid-sentence.
+          "Hotkey/AltTriggerKeys" = { };
+        };
+        inputMethod = {
+          GroupOrder."0" = "Default";
+          "Groups/0" = {
+            Name = "Default";
+            "Default Layout" = "us";
+            DefaultIM = "mozc";
+          };
+          "Groups/0/Items/0".Name = "keyboard-us";
+          "Groups/0/Items/1".Name = "mozc";
+        };
+      };
+    };
+  };
+
   # ── Ghostty Terminal ──────────────────────────────────────────────────
   # DMS generates ~/.config/ghostty/themes/dankcolors automatically.
   xdg.configFile."ghostty/config".text = ''
