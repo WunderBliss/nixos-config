@@ -79,6 +79,15 @@ hl.window_rule({ match = { class = "^(yazi-picker)$" }, float = true, move = "30
 hl.window_rule({ match = { title = "^.*(DEBUG)$" }, float = true })
 hl.window_rule({ match = { class = "^(Emulator)$" }, float = true })
 
+-- Mouse capture. Wine's Wayland driver re-centres the cursor with pointer
+-- warps, which Hyprland ignores once the cursor has left the window, so games
+-- in windowed mode lose the mouse. confine_pointer keeps it inside the window;
+-- no_follow_mouse stops hover from pulling focus back after leaving with the
+-- keyboard (SUPER+H/L or a workspace switch). Click the window to re-enter.
+hl.window_rule({ match = { class = "^(starcitizen\\.exe)$" }, confine_pointer = true, no_follow_mouse = true })
+-- "Sticky mouse": SUPER+M toggles the same behaviour on any window (red border).
+hl.window_rule({ match = { tag = "sticky" }, confine_pointer = true, no_follow_mouse = true, border_color = "rgb(ff5555)" })
+
 -- ── Autostart ─────────────────────────────────────────────────────────
 hl.on("hyprland.start", function()
   hl.exec_cmd("dbus-update-activation-environment --systemd DISPLAY HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE && systemctl --user stop hyprland-session.target && systemctl --user start hyprland-session.target")
@@ -98,6 +107,7 @@ hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd("walker"))
 -- Window management
 hl.bind(mod .. " + Q", hl.dsp.window.close())
 hl.bind(mod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mod .. " + M", hl.dsp.window.tag({ tag = "sticky" }))
 
 -- Focus (hl.dsp.layout = layoutmsg for the scrolling layout)
 hl.bind(mod .. " + H", hl.dsp.layout("focus l"))
