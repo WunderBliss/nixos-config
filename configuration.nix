@@ -95,6 +95,21 @@
   # ── Unfree Packages ──────────────────────────────────────────────────
   nixpkgs.config.allowUnfree = true;
 
+  # ── Temporary overlays ───────────────────────────────────────────────
+  nixpkgs.overlays = [
+    # typescript-language-server 6.0.2 ships a stale pnpmDeps hash on
+    # nixos-unstable (nixpkgs b1b8759, 2026-10). Master already carries the
+    # corrected hash below. Remove this override once `update` pulls in a
+    # nixpkgs whose package.nix matches master.
+    (final: prev: {
+      typescript-language-server = prev.typescript-language-server.overrideAttrs (old: {
+        pnpmDeps = old.pnpmDeps.overrideAttrs (_: {
+          outputHash = "sha256-xR/EF60lVBsITKgH7wCM2wHM46PFQevD51KfCENSUH4=";
+        });
+      });
+    })
+  ];
+
   # ── User ──────────────────────────────────────────────────────────────
   users.users.owen = {
     isNormalUser = true;
