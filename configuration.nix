@@ -158,7 +158,7 @@
   };
 
   # ── Display Manager — dms-greeter via greetd ─────────────────────────
-  services.displayManager.dms-greeter = {
+  services.displayManager.dux-greeter = {
     enable = true;
     compositor.name = "hyprland";
     configHome = "/home/owen";
