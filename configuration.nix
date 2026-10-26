@@ -170,8 +170,9 @@
   # ── Portal / Desktop Integration ──────────────────────────────────────
   xdg.portal = {
     enable = true;
+    # xdg-desktop-portal-hyprland is added by programs.hyprland; listing it
+    # here too yields two store paths and a user-units symlink collision.
     extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
       xdg-desktop-portal-gtk
       xdg-desktop-portal-termfilechooser
     ];
