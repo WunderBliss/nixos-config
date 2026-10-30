@@ -198,8 +198,34 @@
     configType = "lua";
 
     # All config lives in hyprland.lua — edit that file directly.
-    # home-manager only contributes the systemd activation hook.
-    extraConfig = ''require("config")'';
+    # home-manager only contributes the systemd activation hook plus the
+    # DMS/Dux include lines below.  DMS greps ~/.config/hypr/hyprland.lua
+    # for non-comment lines matching `dms.<name>` and, if one is missing,
+    # tries to append it — which fails on this read-only store symlink
+    # ("Permission denied" from `dms setup` / the keybinds editor).  Keeping
+    # the requires here satisfies that check so DMS never needs to write.
+    #
+    # Order matters (later hl.config calls win):
+    #   dms.layout BEFORE config → hyprland.lua's gaps/border/rounding stay
+    #     authoritative; DMS still contributes its bar/island xray layer rules.
+    #     To let the DMS layout UI own these instead, move it below and drop
+    #     the general/decoration block from hyprland.lua.
+    #   dms.binds BEFORE config → DMS stock defaults never clobber your keys.
+    #   everything else AFTER config → matugen colors, DMS window rules, and
+    #     your own DMS keybind edits (binds-user: hl.unbind + rebind) win.
+    extraConfig = ''
+      -- DMS Include Configs
+      require("dms.layout")
+      require("dms.binds") -- DMS default binds lose to yours; binds-user (below) wins
+      require("config")
+      require("dms.colors")
+      require("dms.cursor")
+      require("dms.input")
+      require("dms.windowrules")
+      require("dms.binds-user")
+      -- outputs.lua only exists once the DMS display settings have been saved
+      pcall(require, "dms.outputs")
+    '';
 
   };
 
