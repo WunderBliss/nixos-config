@@ -292,112 +292,112 @@
   "blurWallpaperOnOverview": false,
   "controlCenterWidgets": [
     {
+      "col": 0,
       "enabled": true,
       "h": 1,
       "id": "user",
-      "w": 5,
-      "col": 0,
-      "row": 0
+      "row": 0,
+      "w": 5
     },
     {
+      "col": 5,
       "enabled": true,
       "h": 1,
       "id": "settings",
+      "row": 0,
       "small": true,
-      "w": 1,
-      "col": 5,
-      "row": 0
+      "w": 1
     },
     {
+      "col": 6,
       "enabled": true,
       "h": 1,
       "id": "lock",
+      "row": 0,
       "small": true,
-      "w": 1,
-      "col": 6,
-      "row": 0
+      "w": 1
     },
     {
+      "col": 7,
       "enabled": true,
       "h": 1,
       "id": "power",
+      "row": 0,
       "small": true,
-      "w": 1,
-      "col": 7,
-      "row": 0
+      "w": 1
     },
     {
+      "col": 0,
       "enabled": true,
       "h": 1,
       "id": "volumeSlider",
-      "w": 4,
-      "col": 0,
-      "row": 1
+      "row": 1,
+      "w": 4
     },
     {
+      "col": 4,
       "enabled": true,
       "h": 1,
       "id": "brightnessSlider",
-      "w": 4,
-      "col": 4,
-      "row": 1
+      "row": 1,
+      "w": 4
     },
     {
+      "col": 0,
       "enabled": true,
       "h": 1,
       "id": "wifi",
-      "w": 4,
-      "col": 0,
-      "row": 2
+      "row": 2,
+      "w": 4
     },
     {
+      "col": 4,
       "enabled": true,
       "h": 1,
       "id": "bluetooth",
-      "w": 4,
-      "col": 4,
-      "row": 2
+      "row": 2,
+      "w": 4
     },
     {
+      "col": 0,
       "enabled": true,
       "h": 1,
       "id": "audioOutput",
-      "w": 4,
-      "col": 0,
-      "row": 3
+      "row": 3,
+      "w": 4
     },
     {
+      "col": 4,
       "enabled": true,
       "h": 1,
       "id": "audioInput",
-      "w": 4,
-      "col": 4,
-      "row": 3
+      "row": 3,
+      "w": 4
     },
     {
+      "col": 0,
       "enabled": true,
       "h": 1,
       "id": "nightMode",
-      "w": 4,
-      "col": 0,
-      "row": 4
+      "row": 4,
+      "w": 4
     },
     {
+      "col": 4,
       "enabled": true,
       "h": 1,
       "id": "darkMode",
-      "w": 4,
-      "col": 4,
-      "row": 4
+      "row": 4,
+      "w": 4
     },
     {
+      "col": 0,
       "enabled": true,
       "h": 1,
       "id": "edit",
+      "row": 6,
       "small": true,
-      "w": 1,
-      "col": 0,
-      "row": 6
+      "w": 1
     },
     {
       "col": 0,
@@ -409,12 +409,12 @@
       "w": 4
     },
     {
-      "id": "idleInhibitor",
-      "enabled": true,
-      "w": 4,
-      "h": 1,
       "col": 4,
-      "row": 5
+      "enabled": true,
+      "h": 1,
+      "id": "idleInhibitor",
+      "row": 5,
+      "w": 4
     }
   ],
   "workspaceNameIcons": {},
@@ -679,46 +679,47 @@
       "islandFloating": true,
       "islandHomeLayout": [
         {
-          "id": "workspaces",
-          "enabled": true
+          "enabled": true,
+          "id": "workspaces"
         },
         {
-          "id": "media",
-          "enabled": true
+          "enabled": true,
+          "id": "media"
         },
         {
-          "id": "clock",
-          "enabled": true
+          "enabled": true,
+          "id": "clock"
         },
         {
-          "id": "weather",
-          "enabled": true
+          "enabled": true,
+          "id": "weather"
         },
         {
-          "id": "status",
-          "enabled": true
+          "enabled": true,
+          "id": "status"
         },
         {
-          "id": "volume",
-          "enabled": false
+          "enabled": false,
+          "id": "volume"
         },
         {
-          "id": "brightness",
-          "enabled": false
+          "enabled": false,
+          "id": "brightness"
         },
         {
-          "id": "notifications",
-          "enabled": true
+          "enabled": true,
+          "id": "notifications"
         },
         {
-          "id": "privacy",
-          "enabled": true
+          "enabled": true,
+          "id": "privacy"
         },
         {
-          "id": "tray",
-          "enabled": true
+          "enabled": true,
+          "id": "tray"
         }
       ],
+      "islandNotch": false,
       "islandPlacement": "edge",
       "islandRouteDash": "follow",
       "islandRouteMedia": "follow",
@@ -814,13 +815,13 @@
           "showBluetoothIcon": true,
           "showBrightnessIcon": false,
           "showBrightnessPercent": false,
+          "showIdleInhibitorIcon": true,
           "showMicIcon": false,
           "showMicPercent": false,
           "showNetworkIcon": true,
           "showPrinterIcon": false,
           "showScreenSharingIcon": true,
-          "showVpnIcon": true,
-          "showIdleInhibitorIcon": true
+          "showVpnIcon": true
         }
       ],
       "screenPreferences": ["all"],
@@ -834,7 +835,9 @@
       "widgetOutlineColor": "primary",
       "widgetOutlineEnabled": false,
       "widgetTransparency": 1,
-      "islandNotch": false
+      "islandHoverOpenDelay": 500,
+      "islandHoverCloseDelay": 100,
+      "islandFreeEdgeMargin": 2
     },
     {
       "autoHide": true,
@@ -959,17 +962,17 @@
   "desktopWidgetInstances": [],
   "desktopWidgetGroups": [],
   "builtInPluginSettings": {
-    "dms_settings_search": {
-      "trigger": "?"
-    },
-    "dms_qr_generator": {
-      "trigger": "qrg"
+    "dms_clipboard_search": {
+      "trigger": "cb"
     },
     "dms_power": {
       "trigger": "pw"
     },
-    "dms_clipboard_search": {
-      "trigger": "cb"
+    "dms_qr_generator": {
+      "trigger": "qrg"
+    },
+    "dms_settings_search": {
+      "trigger": "?"
     }
   },
   "clipboardEnterToPaste": false,
