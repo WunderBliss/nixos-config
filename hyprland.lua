@@ -79,12 +79,19 @@ hl.window_rule({ match = { class = "^(yazi-picker)$" }, float = true, move = "30
 hl.window_rule({ match = { title = "^.*(DEBUG)$" }, float = true })
 hl.window_rule({ match = { class = "^(Emulator)$" }, float = true })
 
--- Mouse capture. Wine's Wayland driver re-centres the cursor with pointer
--- warps, which Hyprland ignores once the cursor has left the window, so games
--- in windowed mode lose the mouse. confine_pointer keeps it inside the window;
+-- Mouse capture. Star Citizen hides the cursor for mouselook but never clips
+-- it, and on Wayland relative motion only reaches the surface under the
+-- pointer, so the camera dies when the cursor leaves the window.
+-- confine_pointer keeps it inside (the patched Hyprland also clamps relative
+-- motion while a *visible* cursor is pinned, which keeps mobiGlas/Esc-menu
+-- hit-boxes under the cursor; see patches/ and Claude/star-citizen-input.md).
 -- no_follow_mouse stops hover from pulling focus back after leaving with the
 -- keyboard (SUPER+H/L or a workspace switch). Click the window to re-enter.
-hl.window_rule({ match = { class = "^(starcitizen\\.exe)$" }, confine_pointer = true, no_follow_mouse = true })
+-- suppress_event: Hyprland 0.57 sends a maximized hint to new tiled windows
+-- and Wine answers with unset_maximized, which Hyprland takes as a client
+-- fullscreen-state change; the window then opens full-width with a
+-- fullscreenClient flag that turns the confine region into the whole monitor.
+hl.window_rule({ match = { class = "^(starcitizen\\.exe)$" }, confine_pointer = true, no_follow_mouse = true, suppress_event = "maximize fullscreen" })
 -- "Sticky mouse": SUPER+M toggles the same behaviour on any window (red border).
 hl.window_rule({ match = { tag = "sticky" }, confine_pointer = true, no_follow_mouse = true, border_color = "rgb(ff5555)" })
 

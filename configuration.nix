@@ -108,6 +108,19 @@
         });
       });
     })
+
+    # Hyprland: clamp relative motion when a confine_pointer rule pins a
+    # visible cursor. Wine turns relative motion into Windows raw input, and
+    # Star Citizen tracks its menu cursor (mobiGlas, Esc) from raw deltas
+    # clamped to what it thinks is a 5120-wide screen, so with the real cursor
+    # pinned at the 2560 window edge the two drift apart. Hidden cursors
+    # (mouselook) keep the full deltas, so camera capture is unaffected. See
+    # Obsidian Claude/star-citizen-input.md. Remove if upstreamed.
+    (final: prev: {
+      hyprland = prev.hyprland.overrideAttrs (old: {
+        patches = (old.patches or [ ]) ++ [ ./patches/hyprland-confine-rule-clamps-relative-motion.patch ];
+      });
+    })
   ];
 
   # ── User ──────────────────────────────────────────────────────────────

@@ -1,0 +1,97 @@
+diff -ruN a/src/managers/input/InputManager.cpp b/src/managers/input/InputManager.cpp
+--- a/src/managers/input/InputManager.cpp
++++ b/src/managers/input/InputManager.cpp
+@@ -153,8 +153,23 @@
+ 
+     // an interactive move or resize is an exclusive grab, so don't feed relative motion to the window being
+     // dragged. a pointer-locked game would otherwise pan its camera from the drag itself.
+-    if (!g_layoutManager->dragController()->target())
+-        PROTO::relativePointer->sendRelativeMotion(sc<uint64_t>(e.timeMs) * 1000, delta, unaccel);
++    if (!g_layoutManager->dragController()->target()) {
++        Vector2D relDelta   = delta;
++        Vector2D relUnaccel = unaccel;
++
++        // When a confine_pointer rule pins a *visible* cursor at the window edge, only report the
++        // motion the pointer actually makes. Wine forwards relative motion as Windows raw input, and a
++        // client tracking its visible cursor from raw deltas would otherwise keep moving it past the
++        // edge while the real cursor stays pinned. Hidden cursors (mouselook) keep the full deltas.
++        if (const auto CLAMPED = m_pointerConstraints.ruleClamp(getMouseCoordsInternal() + DELTA); CLAMPED) {
++            const auto ACTUAL = *CLAMPED - getMouseCoordsInternal();
++            const auto RATIO  = Vector2D{DELTA.x != 0 ? std::clamp(ACTUAL.x / DELTA.x, 0.0, 1.0) : 0.0, DELTA.y != 0 ? std::clamp(ACTUAL.y / DELTA.y, 0.0, 1.0) : 0.0};
++            relDelta          = Vector2D{delta.x * RATIO.x, delta.y * RATIO.y};
++            relUnaccel        = Vector2D{unaccel.x * RATIO.x, unaccel.y * RATIO.y};
++        }
++
++        PROTO::relativePointer->sendRelativeMotion(sc<uint64_t>(e.timeMs) * 1000, relDelta, relUnaccel);
++    }
+     Pointer::mgr()->move(DELTA);
+ 
+     if (PROTO::inputCapture->isCaptured())
+diff -ruN a/src/managers/input/PointerConstraintController.cpp b/src/managers/input/PointerConstraintController.cpp
+--- a/src/managers/input/PointerConstraintController.cpp
++++ b/src/managers/input/PointerConstraintController.cpp
+@@ -8,6 +8,7 @@
+ #include "../../event/EventBus.hpp"
+ #include "../../helpers/time/Time.hpp"
+ #include "../../pointer/PointerController.hpp"
++#include "../../pointer/PointerManager.hpp"
+ #include "../../protocols/PointerConstraints.hpp"
+ #include "../../protocols/RelativePointer.hpp"
+ #include "../../protocols/core/Compositor.hpp"
+@@ -177,6 +178,33 @@
+     return SURFACE->resource() == g_pSeatManager->m_state.pointerFocus && focusOwner(target) == focusOwner(SURFACE->resource());
+ }
+ 
++std::optional<Vector2D> CPointerConstraintController::ruleClamp(const Vector2D& position) const {
++    const auto SURFACE = activeSurface();
++    if (!SURFACE)
++        return std::nullopt;
++
++    // Native constraints are what the client asked for; keep protocol semantics there.
++    const auto NATIVE = m_native.lock();
++    if (NATIVE && NATIVE->isActive())
++        return std::nullopt;
++
++    const auto RULEWINDOW = ruleWindow(SURFACE);
++    if (!RULEWINDOW)
++        return std::nullopt;
++
++    // A hidden cursor means the client is doing mouselook from raw deltas and wants them
++    // uncut, the same as a lock would give it. Only a visible cursor gets clamped.
++    const auto& IMAGE = Pointer::mgr()->currentCursorImage();
++    if (!IMAGE.surface && !IMAGE.pBuffer)
++        return std::nullopt;
++
++    const auto RULEBOX = RULEWINDOW->wlSurface()->getSurfaceBoxGlobal();
++    if (!RULEBOX)
++        return std::nullopt;
++
++    return CRegion(*RULEBOX).closestPoint(position);
++}
++
+ void CPointerConstraintController::enforce() {
+     apply(Time::millis(Time::steadyNow()), g_pInputManager->getMouseCoordsInternal());
+ }
+diff -ruN a/src/managers/input/PointerConstraintController.hpp b/src/managers/input/PointerConstraintController.hpp
+--- a/src/managers/input/PointerConstraintController.hpp
++++ b/src/managers/input/PointerConstraintController.hpp
+@@ -7,6 +7,7 @@
+ #include <hyprutils/math/Vector2D.hpp>
+ #include <cstddef>
+ #include <cstdint>
++#include <optional>
+ 
+ class CPointerConstraint;
+ class CWLSurfaceResource;
+@@ -29,6 +30,11 @@
+     bool                                        blocksAbsoluteMotion() const;
+     bool                                        preservesPointerFocus(SP<CWLSurfaceResource> target) const;
+ 
++    // If a confine_pointer *rule* (not a native constraint) is pinning a client that is
++    // currently showing a cursor, return where `position` will be clamped to. Used to clamp
++    // relative motion to the movement the pointer actually makes.
++    std::optional<Hyprutils::Math::Vector2D>    ruleClamp(const Hyprutils::Math::Vector2D& position) const;
++
+   private:
+     SP<Desktop::View::CWLSurface> activeSurface() const;
+     void                          resume();
