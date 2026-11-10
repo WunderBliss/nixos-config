@@ -97,15 +97,39 @@
 
   # ── Temporary overlays ───────────────────────────────────────────────
   nixpkgs.overlays = [
-    # typescript-language-server 6.0.2 ships a stale pnpmDeps hash on
-    # nixos-unstable (nixpkgs b1b8759, 2026-10). Master already carries the
-    # corrected hash below. Remove this override once `update` pulls in a
-    # nixpkgs whose package.nix matches master.
+    # nixpkgs f4a03c0 (2026-11-07) turned on cargoUseSystemLibs, which exports
+    # ZSTD_SYS_USE_PKG_CONFIG=1, AWS_LC_SYS_USE_SYSTEM=1,
+    # LIBSQLITE3_SYS_USE_PKG_CONFIG=1 and friends for every
+    # buildRustPackage. Packages whose package.nix never listed those libs now
+    # fail in their *-sys build scripts. Three we depend on:
+    #
+    # turbo-unwrapped 2.11.7 (via modrinth-app): zstd-sys needs pkg-config +
+    # zstd. Fixed on nixpkgs master in "turbo-unwrapped: fix build with sys
+    # libs" (2026-11-07). Remove once `update` pulls that in.
     (final: prev: {
-      typescript-language-server = prev.typescript-language-server.overrideAttrs (old: {
-        pnpmDeps = old.pnpmDeps.overrideAttrs (_: {
-          outputHash = "sha256-xR/EF60lVBsITKgH7wCM2wHM46PFQevD51KfCENSUH4=";
-        });
+      turbo-unwrapped = prev.turbo-unwrapped.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
+        buildInputs = (old.buildInputs or [ ]) ++ [ final.zstd ];
+      });
+    })
+
+    # wl-proxy 0.1.5 (wl-veil, used by rsi-launcher-veiled in
+    # modules/user-extras.nix): aws-lc-sys needs pkg-config + aws-lc. Still
+    # unfixed on nixpkgs master as of 2026-11-10. Remove once upstream adds
+    # them (check pkgs/by-name/wl/wl-proxy/package.nix for `aws-lc`).
+    (final: prev: {
+      wl-proxy = prev.wl-proxy.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
+        buildInputs = (old.buildInputs or [ ]) ++ [ final.aws-lc ];
+      });
+    })
+
+    # modrinth-app-unwrapped 0.21.6: libsqlite3-sys (via sqlx) needs sqlite.
+    # Still unfixed on nixpkgs master as of 2026-11-10. Remove once upstream
+    # adds `sqlite` to buildInputs in pkgs/by-name/mo/modrinth-app-unwrapped.
+    (final: prev: {
+      modrinth-app-unwrapped = prev.modrinth-app-unwrapped.overrideAttrs (old: {
+        buildInputs = (old.buildInputs or [ ]) ++ [ final.sqlite ];
       });
     })
 
